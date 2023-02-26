@@ -10,6 +10,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test:unit": "vitest",
+		"clean": "find . -name \".DS_Store\" -print -delete",
 		"lint": "eslint .",
 		"postbuild": "svelte-sitemap --domain https://make-bookmarklets.com --change-freq weekly --reset-time -i '404.html'"
 	},
@@ -27,7 +28,6 @@
 		"eslint": "^8.28.0",
 		"eslint-linter-browserify": "^8.34.0",
 		"eslint-plugin-svelte3": "^4.0.0",
-		"eslint4b-prebuilt": "^6.7.2",
 		"sass": "^1.58.2",
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",

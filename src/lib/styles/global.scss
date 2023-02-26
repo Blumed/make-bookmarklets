@@ -1,0 +1,64 @@
+:root {
+    font-family: 'Lexend Deca', Arial, -apple-system, sans-serif;
+    --font-base: 16px;
+    --clay-color: #edece8;
+    --pink-color: #ec6e89;
+    --red-color: #d53253;
+    --dark-red-color: #b80000;
+    --turquoise-color: #b9e7de;
+    --purple-color: #bc98cb;
+    --global-transition: all 0.3s ease-in-out;
+    --black-color: #161613;
+}
+
+body {
+    font-family: inherit;
+    font-size: var(--font-base);
+    background-color: var(--clay-color);
+    color: var(--black-color);
+    margin: 0;
+}
+
+p {
+    font-weight: 300;
+    letter-spacing: .7px;
+    line-height: 25px;
+    font-weight: 200;
+}
+li {
+    font-weight: 300;
+}
+
+a {
+    color: var(--pink-color);
+    font-weight: 400;
+    text-decoration: none;
+}
+
+
+.section {
+    padding: 60px 5%;
+}
+
+.container {
+    max-width: 1250px;
+    margin-inline: auto;
+}
+
+.input {
+    padding: 10px;
+    width: 100%;
+    border: 2px solid var(--black-color);
+    border-radius: 0.25rem;
+}
+
+.container-small {
+    max-width: 900px;
+    margin-inline: auto;
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding-block: 30px;
+    }
+}
