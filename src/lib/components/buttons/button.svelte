@@ -33,6 +33,7 @@
 
 <style lang="scss">
     .button {
+        font-family: inherit;
         display: inline-block;
         font-size: 16px;
         font-weight: 500;
@@ -83,6 +84,10 @@
             &:hover {
                 background-color: var(--pink-color);
             }
+        }
+        &.button-small {
+            padding: 12px 15px;
+            font-size: 0.875rem;
         }
         &:hover {
             background-color: var(--clay-color);

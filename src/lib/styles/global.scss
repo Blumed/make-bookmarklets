@@ -1,3 +1,24 @@
+@font-face {
+    font-display: swap;
+    font-family: "Lexend Deca";
+    font-style: normal;
+    font-weight: 200;
+    src: url("/fonts/LexendDeca-ExtraLight.woff2") format('woff2');
+}
+@font-face {
+    font-display: swap;
+    font-family: "Lexend Deca";
+    font-style: bold;
+    font-weight: 700;
+    src: url("/fonts/LexendDeca-Bold.woff2") format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: "Lexend Deca";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/LexendDeca-Regular.woff2") format('woff2');
+}
 :root {
     font-family: 'Lexend Deca', Arial, -apple-system, sans-serif;
     --font-base: 16px;
@@ -10,6 +31,9 @@
     --global-transition: all 0.3s ease-in-out;
     --black-color: #161613;
 }
+*, :after, :before {
+    box-sizing: border-box;;
+}
 
 body {
     font-family: inherit;
@@ -17,6 +41,7 @@ body {
     background-color: var(--clay-color);
     color: var(--black-color);
     margin: 0;
+    overflow-x: hidden;
 }
 
 p {
@@ -26,11 +51,13 @@ p {
     font-weight: 200;
 }
 li {
-    font-weight: 300;
+    font-weight: 200;
+    letter-spacing: 0.7px;
+
 }
 
 a {
-    color: var(--pink-color);
+    color: var(--red-color);
     font-weight: 400;
     text-decoration: none;
 }
@@ -55,6 +82,116 @@ a {
 .container-small {
     max-width: 900px;
     margin-inline: auto;
+}
+
+.button, [role="button"] {
+    font-family: inherit;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    padding: 15px 20px;
+    border: 2px solid currentColor;
+    color: var(--black-color);
+    border-radius: 0.25rem;
+    background-color: transparent;
+    box-shadow: 6px 6px 0 0 var(--black-color);
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    text-decoration: none;
+    transition: var(--global-transition);
+    line-height: 1;
+    cursor: pointer;
+    &.fill-white {
+        background-color: #ffffff;
+        &:hover {
+            background-color: var(--turquoise-color);
+            transform: translate(2px,2px);
+            box-shadow: 3px 3px 0 0 var(--black-color) !important;
+        }
+        &:active {
+            transform: translate(4px,4px);
+            box-shadow: 1px 1px 0 0 var(--black-color) !important;
+        }
+    }
+}
+.button-close {
+    display: inline-block;
+    z-index: 8;
+    top: 16px;
+    right: 32px;
+    background-color: #fff;
+    margin: 0;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border: 0.15em solid var(--black-color);
+    border-radius: 0.15rem;
+    overflow: hidden;
+    &:checked {
+        display: inline-block !important;
+    }
+    &:after {
+        content: "";
+        width: 2px;
+        height: 12px;
+        background-color: var(--black-color);
+        display: block;
+        top: 2px;
+        left: calc(50% - 1px);
+        position: absolute;
+        rotate: 45deg;
+        animation-name: slideIn;
+        animation-duration: .5s;
+      }
+      &:before {
+        content: "";
+        width: 2px;
+        height: 12px;
+        background-color: black;
+        display: block;
+        top: 2px;
+        left: calc(50% - 1px);
+        position: absolute;
+        rotate: -45deg;
+        animation-name: oppositeSlideIn;
+        animation-duration: .5s;
+      }
+}
+
+@keyframes slideIn {
+    from {
+            top: 100%;
+             left: -30%;
+    }
+    to {
+        top: 2px;
+           left: calc(50% - 1px);
+    }
+}
+@keyframes oppositeSlideIn {
+    from {
+        top: 100%;
+        left: 130%;
+    }
+    to {
+        top: 2px;
+        left: calc(50% - 1px);
+    }
+}
+
+.button-inline {
+    color: var(--red-color);
+    font-weight: 400;
+    cursor: pointer;
+    border: 0;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 25px;
+    letter-spacing: 0.7px;
+    background-color: transparent;
 }
 
 @media (max-width: 768px) {

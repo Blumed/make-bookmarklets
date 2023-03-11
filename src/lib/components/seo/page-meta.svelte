@@ -10,9 +10,9 @@
 		"https://make-bookmarklets.com/default-twitter-image.webp";
 
 	export let seo = {
-		title: "Make Bookmarklets · Not War",
+		title: "Make Bookmarklets · Create Share Repeat",
 		description:
-			"Create and test bookmarklets in your browser. Extend your browsing experience any way you see fit.",
+			"A bookmarklet generator which is clean and easy to use. Create and test bookmarklets in your browser. Extend your browsing experience any way you see fit.",
 		canonical: baseUrl,
 	};
 
