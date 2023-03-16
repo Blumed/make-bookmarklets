@@ -3,7 +3,7 @@
 
 ## A simple bookmarklet generator 🤖
 
-Bookmarklets are great for micro to macro automation. Extend what you can do in the browser the way you see fit.
+Bookmarklets are great for micro to macro automation. Extend what you can do in your browser any way you see fit.
 
 - [x] All code is ready to go as a bookmarklet, so just write some Javascript and have fun
 

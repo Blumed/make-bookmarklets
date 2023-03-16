@@ -429,12 +429,12 @@
             <h4>Absolutely, as long as you understand what they are doing</h4>
             <p>
                 Some basic common sense should be applied when using any old
-                bookmarklet you find laying around the internet. Make sure the
-                site and source is credible. Always copy and paste them into an
-                editor for safe reading. Be weary of bookmarklets that execute
-                external scripts. If they do have external scripts generate a
-                readable version so you can understand what it is doing. You can
-                also skip all this and make your own 😊
+                bookmarklet you find laying around on the internet. Make sure
+                the site and source is credible. Always copy and paste them into
+                an editor for safe reading. Be weary of bookmarklets that
+                execute external scripts. If they do have external scripts
+                generate a readable version so you can understand what it is
+                doing. You can also skip all this and make your own 😊
             </p>
         </Accordion>
     </div>
