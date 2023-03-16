@@ -4,13 +4,11 @@
 	export let pageMetaDescription = "";
 
 	export const baseUrl = "https://make-bookmarklets.com";
-	export const ogImage =
-		"https://make-bookmarklets.com/default-og-image.webp";
-	export const twitterImage =
-		"https://make-bookmarklets.com/default-twitter-image.webp";
+	export const ogImage = "/default-og-image.webp";
+	export const twitterImage = "/default-twitter-image.webp";
 
 	export let seo = {
-		title: "Make Bookmarklets · Create Share Repeat",
+		title: "Make Bookmarklets · Make It Easy",
 		description:
 			"A bookmarklet generator which is clean and easy to use. Create and test bookmarklets in your browser. Extend your browsing experience any way you see fit.",
 		canonical: baseUrl,
@@ -27,17 +25,15 @@
 	<meta name="description" content={metaDescription} />
 	<!-- Open Graph -->
 	<meta content="Make Bookmarklets" property="og:site_name" />
-	<meta content="Make Bookmarklets · Not War" property="og:title" />
+	<meta content="Make Bookmarklets · Make It Easey" property="og:title" />
 	<meta content="website" property="og:type" />
 	<meta content={seo.description} property="og:description" />
 	<meta content={baseUrl} property="og:url" />
 	<meta content={ogImage} property="og:image" />
 	<!-- Twitter -->
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:site" content="@CullanLuther" />
-	<meta content="Make Bookmarklets · Not War" property="twitter:title" />
+	<meta content="Make Bookmarklets · Make It Easy" property="twitter:title" />
 	<meta content={seo.description} property="twitter:description" />
-	<meta name="twitter:creator" content="@CullanLuther" />
 	<meta content={twitterImage} property="twitter:image" />
 	<meta name="color-scheme" content="dark light" />
 	<link rel="canonical" href={canonicalUrl} />

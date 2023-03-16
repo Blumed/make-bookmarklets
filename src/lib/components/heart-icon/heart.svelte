@@ -1,4 +1,5 @@
 <script>
+    // Going to make something fun here soon.
     let width = "20";
     let height = "20";
 
@@ -8,7 +9,7 @@
     };
 </script>
 
-<picture>
+<span>
     <svg
         xmlns="http://www.w3.org/2000/svg"
         {width}
@@ -23,10 +24,10 @@
             fill="#ec6e89"
         /></svg
     >
-</picture>
+</span>
 
 <style lang="scss">
-    picture {
+    span {
         position: relative;
         width: 24px;
         display: inline-block;

@@ -19,6 +19,7 @@
   font-weight: normal;
   src: url("/fonts/LexendDeca-Regular.woff2") format('woff2');
 }
+
 :root {
     font-family: 'Lexend Deca', Arial, -apple-system, sans-serif;
     --font-base: 16px;
@@ -31,6 +32,7 @@
     --global-transition: all 0.3s ease-in-out;
     --black-color: #161613;
 }
+
 *, :after, :before {
     box-sizing: border-box;;
 }
@@ -104,19 +106,30 @@ a {
     transition: var(--global-transition);
     line-height: 1;
     cursor: pointer;
+
+    &:hover {
+        transform: translate(2px,2px);
+        box-shadow: 3px 3px 0 0 var(--black-color) !important;
+    }
+
+    &:active {
+        transform: translate(4px,4px);
+        box-shadow: 1px 1px 0 0 var(--black-color) !important;
+    }
+
     &.fill-white {
         background-color: #ffffff;
         &:hover {
             background-color: var(--turquoise-color);
-            transform: translate(2px,2px);
-            box-shadow: 3px 3px 0 0 var(--black-color) !important;
-        }
-        &:active {
-            transform: translate(4px,4px);
-            box-shadow: 1px 1px 0 0 var(--black-color) !important;
         }
     }
+
+    &.button-small {
+        padding: 12px 15px;
+        font-size: 0.875rem;
+    }
 }
+
 .button-close {
     display: inline-block;
     z-index: 8;
@@ -171,6 +184,7 @@ a {
            left: calc(50% - 1px);
     }
 }
+
 @keyframes oppositeSlideIn {
     from {
         top: 100%;
@@ -194,8 +208,17 @@ a {
     background-color: transparent;
 }
 
+.button + .button {
+    margin-left: 20px;
+}
+
 @media (max-width: 768px) {
     .section {
         padding-block: 30px;
+    }
+
+    .button + .button {
+        margin-top: 20px;
+        margin-left: 0;
     }
 }

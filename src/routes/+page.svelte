@@ -1,12 +1,20 @@
 <script lang="ts">
     import { browser } from "$app/environment";
-    import Seo from "$lib/components/seo/page-meta.svelte";
+    import Seo from "$lib/components/page-meta.svelte";
     import AccordionItem from "$lib/components/accordion.svelte";
     import CodeMirror from "svelte-codemirror-editor";
     import { javascript, esLint } from "@codemirror/lang-javascript";
     import { linter, lintGutter } from "@codemirror/lint";
     import { slide } from "svelte/transition";
-    import Button from "$lib/components/buttons/button.svelte";
+    import {
+        useExample1,
+        useExample2,
+        useExample3,
+        useExample4,
+        useExample5,
+        config,
+    } from "$lib/components/constants";
+
     // Uses linter.mjs
     import * as eslint from "eslint-linter-browserify";
     import { oneDark } from "@codemirror/theme-one-dark";
@@ -14,18 +22,18 @@
     import Accordion from "$lib/components/accordion.svelte";
 
     let errorMessage = "";
-    export let codeInput = "";
+    let codeInput = "";
     let codeOutput = "";
     let bookmarkletName = "Drag Me To Your Nearest Bookmark Bar";
     let toggleBookmarklet = false;
     let toggleExamples = false;
 
-    const minification = async (str: string) => {
+    async function minification(str: string) {
         const result = await minify(str, {});
         return result.code;
-    };
+    }
 
-    const result = () => {
+    function result() {
         return minification(codeInput)
             .then((result) => {
                 errorMessage = "";
@@ -41,47 +49,19 @@
                 codeOutput = "";
                 return (errorMessage = err);
             });
-    };
+    }
 
-    const reset = () => {
+    function reset() {
         codeOutput = "";
         codeInput = "";
         errorMessage = "";
-    };
+    }
 
-    const config = {
-        // eslint configuration
-        parserOptions: {
-            ecmaVersion: 2019,
-            sourceType: "module",
-        },
-        env: {
-            browser: true,
-            node: true,
-        },
-        rules: {
-            semi: ["warn", "always"],
-            "valid-typeof": ["error", "always"],
-            "no-unused-vars": ["error", "always"],
-            "no-unreachable": ["error", "always"],
-            "no-dupe-args": ["error", "always"],
-            "no-dupe-else-if": ["error", "always"],
-            "no-console": ["warn", "always"],
-        },
-    };
-
-    $: if (codeInput === "") reset();
-    $: if (codeInput !== "" && errorMessage === "Put some code in there!")
-        errorMessage = "";
-
-    const toggleDrawer = () => {
+    function toggleSidebarExamples() {
         if (browser) document.getElementById("examples-menu").click();
-    };
-    const addExampleCode = (exampleCode: string, openDrawer: boolean) => {
-        () => (toggleExamples = false);
-        codeInput = "";
-        codeInput = exampleCode;
-        if (openDrawer) toggleDrawer();
+    }
+
+    function scrollToEditor() {
         if (browser) {
             const editor =
                 document.getElementById("editor").getBoundingClientRect().top +
@@ -91,74 +71,41 @@
                 behavior: "smooth",
             });
         }
-        // window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+    }
 
-    let useExample1 = `if(document.designMode === "off") {
-  document.designMode = "on";
-} else {
-  document.designMode = "off"; 
-}`;
+    function addExampleCode(exampleCode: string, openSidebar: boolean) {
+        () => (toggleExamples = false);
+        codeInput = "";
+        codeInput = exampleCode;
+        if (openSidebar) toggleSidebarExamples();
+        scrollToEditor();
+    }
 
-    let useExample2 = `const capture = async () => {
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
-  const video = document.createElement("video");
-
-  try {
-    const captureStream = await navigator.mediaDevices.getDisplayMedia();
-    video.srcObject = captureStream;
-    context.drawImage(video, 0, 0, window.width, window.height);
-    const frame = canvas.toDataURL("image/png");
-    captureStream.getTracks().forEach(track => track.stop());
-    window.location.href = frame;
-  } catch (err) {
-    console.error('Full page screenshot bookmarklet did not work: ' + err);
-  }
-};
-
-capture();`;
-
-    let useExample3 = `function pageSpeedInsights(currentSite){
-  try {
-   window.open('https://pagespeed.web.dev/report?url=' + currentSite, '_blank', 'noopener,noreferrer'); 
-  } catch (error){
-    console.log('pagespeed insights bookmarklet did not work: ', error);
-  }
-};
-pageSpeedInsights(window.location.href);`;
-
-    let useExample4 = `try {   
-  navigator.clipboard.writeText('ADD WHAT EVER TEXT YOU WANT HERE');
-} catch(error) {
-  console.log('Copy To Clipboard Bookmarklet did not work: ', error);
-}`;
+    $: if (codeInput === "") reset();
+    $: if (codeInput !== "" && errorMessage === "Put some code in there!")
+        errorMessage = "";
 </script>
 
-<Seo title="Not War" pageCanonicalUrl="/" />
+<Seo title="Make it easy" pageCanonicalUrl="/" />
+
 <section class="hero section">
     <div class="container">
         <header>
             <h1><span>Welcome to <br /></span>Make Bookmarklets</h1>
-            <!-- <p>
-                What are bookmarklets? Teeny tiny javascript applications stored
-                in a bookmark url. Clicking the bookmark will launch it, so you
-                can customize and extend your browsing experience.
-            </p> -->
-            <section class="features-section">
+            <div class="features-section">
                 <h2>Features Include</h2>
                 <ul>
                     <li>
-                        All javascript created in the editor is wrapped in
-                        bookmarklet executable iife for you, so you just need to
-                        focus on the javascript you wanna write
+                        All Javascript is wrapped in an Immediately Invoked
+                        Function Expression (IIFE) for you
                     </li>
                     <li>Javascript linting</li>
                     <li>Multiline cursor</li>
                     <li>Javascript intellisense</li>
-                    <li>Code is automatically minified and uglified for you</li>
+                    <li>Code is automatically minified and uglified</li>
+                    <li>Works great on mobile devices</li>
                 </ul>
-            </section>
+            </div>
         </header>
         <img
             class="ribbon"
@@ -167,43 +114,44 @@ pageSpeedInsights(window.location.href);`;
         />
     </div>
 </section>
+
 <div class="section code-editor" id="editor">
     <div class="container-small">
-        <CodeMirror
-            bind:value={codeInput}
-            lang={javascript()}
-            theme={oneDark}
-            extensions={[
-                javascript(),
-                lintGutter(),
-                linter(esLint(new eslint.Linter(), config)),
-            ]}
-        />
+        <div class="editor-wrapper">
+            <CodeMirror
+                bind:value={codeInput}
+                lang={javascript()}
+                theme={oneDark}
+                extensions={[
+                    javascript(),
+                    lintGutter(),
+                    linter(esLint(new eslint.Linter(), config)),
+                ]}
+            />
+        </div>
+
         {#if errorMessage !== ""}
             <div class="error-message" in:slide out:slide>
                 <span>{errorMessage}</span>
             </div>
         {/if}
+
         <div class="code-input-controls">
             <div class="buttons">
-                <Button
+                <button
                     type="button"
-                    class="button-create fill-white"
-                    handleClick={result}
-                    buttonText="Create Bookmarklet"
-                />
-                <Button
+                    class="button button-create fill-white"
+                    on:click={result}>Create Bookmarklet</button
+                >
+                <button
                     type="button"
-                    class="button-reset fill-white"
-                    handleClick={reset}
-                    buttonText="Reset"
-                />
+                    class="button button-reset fill-white"
+                    on:click={reset}>Reset</button
+                >
                 {#if codeOutput !== ""}
-                    <Button
-                        href={codeOutput}
-                        class="button-bookmarklet"
-                        buttonText={bookmarkletName}
-                    />
+                    <a href={codeOutput} class="button button-bookmarklet"
+                        >{bookmarkletName}</a
+                    >
                 {/if}
             </div>
         </div>
@@ -220,12 +168,13 @@ pageSpeedInsights(window.location.href);`;
                     />
                 </div>
 
-                <Button
+                <button
                     type="button"
-                    class="button-toggle-code fill-white "
-                    handleClick={() => (toggleBookmarklet = !toggleBookmarklet)}
-                    buttonText={`${toggleBookmarklet ? "Hide" : "Show"} Code`}
-                />
+                    class="button button-toggle-code fill-white "
+                    on:click={() => (toggleBookmarklet = !toggleBookmarklet)}
+                    >{`${toggleBookmarklet ? "Hide" : "Show"} Code`}
+                </button>
+
                 {#if toggleBookmarklet && codeOutput !== ""}
                     <div
                         class="inline-field-group output-code-fields"
@@ -253,15 +202,16 @@ pageSpeedInsights(window.location.href);`;
         {/if}
     </div>
 </div>
-<section class="section example-section">
+
+<section class="section examples-section">
     <div class="container">
-        <div class="example-content">
+        <div class="examples-content">
             <img
-                class="example-image"
+                class="examples-image"
                 src="/flame-no-connection.webp"
                 alt="Mind Expanded Illustration"
             />
-            <div class="example-cta">
+            <div class="examples-cta">
                 <h2>
                     Would you like to see some example bookmarklets to get the
                     juices flowing?
@@ -277,87 +227,7 @@ pageSpeedInsights(window.location.href);`;
         </div>
     </div>
 </section>
-<section class="section content-section">
-    <div class="container">
-        <h2>Frequently Asked Questions</h2>
-        <Accordion id="item-1" title="What are Bookmarklets?">
-            <p>
-                What are bookmarklets? Teeny tiny javascript applications stored
-                in a bookmark url. Clicking the bookmark will launch it, so you
-                can customize and extend your browsing experience.
-            </p>
-        </Accordion>
-        <Accordion id="item-2" title="Why Bookmarklets?">
-            <p>Why use a bookmarklet? From micro to minor task automation.</p>
-            <ul>
-                <li>
-                    Is there a Zoom url you constantly need to copy & paste for
-                    quick impromptu meetings? Use the clipboard API to copy the
-                    url to your clipboard with simple click of a bookmark. Here
-                    is an <button
-                        type="button"
-                        class="button-inline"
-                        on:click={() => addExampleCode(useExample4, false)}
-                        >Example</button
-                    >
-                </li>
-            </ul>
-        </Accordion>
-        <AccordionItem
-            id="item-3"
-            title="Why do bookmarklets stop working on specific sites?"
-        >
-            <h4>Sites with Content Security Policies</h4>
-            <p>
-                A new security feature many large websites are implementing
-                called Content Security Policy (CSP). The reason CSP exists is
-                to prevent Cross Site Scripting (XSS) attacks by blocking the
-                execution of inline styles and scripts. So, bookmarklets won't
-                run on these sites. The work around are browser extensions.
-                Browser extensions work regardless of CSP for whatever reason.
-                Seems like an odd hole, because you can create a local browser
-                extension quickly which is not audited by the browser extension
-                team. I am working on a chrome extension that will allow you to
-                add and organize your bookmarklets and fire them from there.
-            </p>
-            <h4>Global variable collision</h4>
-            <p>
-                If you use window to store variables in your bookmarklet it is
-                possible that the site uses that variable name already. I
-                recommend not using the window object to store objects period.
-                Keep your objects scoped to your bookmarklet and do your best to
-                not let them leak.
-            </p>
-            <h4>Reactive elements</h4>
-            <p>
-                If your script manipulates existing dom elements. Site which use
-                javascript frameworks or libraries like react may wipe your
-                changes. This is because of the reactive nature of virtual dom
-                (vdom) which depending on how components are made might render
-                and rerender quickly which means the element you targeted has
-                been destroyed and recreated essentially causing your changes to
-                stop working or disappear.
-            </p>
-            <h4>Bookmark drawer is not visible</h4>
-            <p>
-                Depending on what your bookmarklet is doing, there might be a
-                requirement that the bookmark drawer below the search bar needs
-                to be visible in order for it to execute appropriately. I ran
-                into this when the bookmarklet I created wrote to the users
-                clipboard when they clicked the bookmarklet. It showed an error
-                in the console and didn't run until I reenabled the bookmark
-                drawer.
-            </p>
-            <h4>Chrome browser on an Android device</h4>
-            <p>
-                Bookmarks saved on desktop are accessible on your mobile
-                devices. Clicking on your bookmarklet from the bookmark menu
-                will not work. You need to access your bookmarklet through the
-                search bar dropdown in order for it to execute.
-            </p>
-        </AccordionItem>
-    </div>
-</section>
+
 <input
     type="checkbox"
     id="examples-menu"
@@ -381,12 +251,12 @@ pageSpeedInsights(window.location.href);`;
             rows="8"
             readonly
         />
-        <Button
+        <button
             type="button"
-            class="button-small  fill-white"
-            handleClick={() => addExampleCode(useExample1, true)}
-            buttonText="Add To Editor"
-        />
+            class="button button-small  fill-white"
+            on:click={() => addExampleCode(useExample1, true)}
+            >Add To Editor</button
+        >
     </aside>
     <aside>
         <h2>Full webpage snapshot</h2>
@@ -403,12 +273,12 @@ pageSpeedInsights(window.location.href);`;
             rows="8"
             readonly
         />
-        <Button
+        <button
             type="button"
-            class="button-small  fill-white"
-            handleClick={() => addExampleCode(useExample2, true)}
-            buttonText="Add To Editor"
-        />
+            class="button button-small  fill-white"
+            on:click={() => addExampleCode(useExample2, true)}
+            >Add To Editor</button
+        >
     </aside>
     <aside>
         <h2>Google page speed insights</h2>
@@ -425,12 +295,12 @@ pageSpeedInsights(window.location.href);`;
             rows="8"
             readonly
         />
-        <Button
+        <button
             type="button"
-            class="button-small  fill-white"
-            handleClick={() => addExampleCode(useExample3, true)}
-            buttonText="Add To Editor"
-        />
+            class="button button-small  fill-white"
+            on:click={() => addExampleCode(useExample3, true)}
+            >Add To Editor</button
+        >
     </aside>
     <aside>
         <h2>Copy text to clipboard</h2>
@@ -446,14 +316,117 @@ pageSpeedInsights(window.location.href);`;
             rows="8"
             readonly
         />
-        <Button
+        <button
             type="button"
-            class="button-small  fill-white"
-            handleClick={() => addExampleCode(useExample4, true)}
-            buttonText="Add To Editor"
+            class="button button-small  fill-white"
+            on:click={() => addExampleCode(useExample4, true)}
+            >Add To Editor</button
+        >
+    </aside>
+    <aside>
+        <h2>Google highlighted text</h2>
+        <p>
+            Highlight any text on the page and search google if the text you
+            highlighted has indexed. If you're keeping an eye on your SEO this
+            is a best practice for making sure google bot is able to reach your
+            content.
+        </p>
+        <textarea
+            name="webpage-editable"
+            id="webpage-editable"
+            class="example-code"
+            value={useExample5}
+            rows="8"
+            readonly
         />
+        <button
+            type="button"
+            class="button button-small  fill-white"
+            on:click={() => addExampleCode(useExample5, true)}
+            >Add To Editor</button
+        >
     </aside>
 </div>
+
+<section class="section faq-section">
+    <div class="container">
+        <h2>Frequently Asked Questions</h2>
+        <Accordion id="item-1" title="What are Bookmarklets?">
+            <p>
+                What are bookmarklets? Teeny tiny Javascript applications stored
+                in a bookmark url. Clicking the bookmark will launch it, so you
+                can customize and extend your browsing experience.
+            </p>
+        </Accordion>
+        <Accordion id="item-2" title="Why Bookmarklets?">
+            <h4>Why use a bookmarklet? From micro to minor task automation.</h4>
+            <p>
+                Is there a Zoom url you constantly need to copy & paste for
+                quick impromptu meetings? Use the clipboard API to copy the url
+                to your clipboard with a simple click of a bookmark. Here is an <button
+                    type="button"
+                    class="button-inline"
+                    on:click={() => addExampleCode(useExample4, false)}
+                    >Example</button
+                >.
+            </p>
+        </Accordion>
+        <AccordionItem
+            id="item-3"
+            title="Why do bookmarklets stop working on specific sites?"
+        >
+            <h4 class="faq-title">Sites with Content Security Policies</h4>
+            <p>
+                A new security feature many large websites are implementing is
+                called Content Security Policy (CSP). The reason CSP exists is
+                to prevent Cross Site Scripting (XSS) attacks by blocking the
+                execution of inline styles and scripts. So, bookmarklets won't
+                run on these sites. The work around is browser extensions.
+                Browser extensions work regardless of CSP for whatever reason.
+                Seems like an odd hole, because you can create a local browser
+                extension quickly which is not audited by the browser extension
+                team. I am working on a Chrome extension that will allow you to
+                add and organize your bookmarklets and fire them from there.
+            </p>
+            <h4>Global variable collision</h4>
+            <p>
+                If you use the window object to store variables in your
+                bookmarklet it is possible that the site uses that variable name
+                already. I recommend not using the window object to store
+                objects, period. Keep your objects scoped to your bookmarklet
+                and do your best to not let them leak.
+            </p>
+            <h4>Reactive elements</h4>
+            <p>
+                If your script manipulates existing dom elements, any site which
+                uses Javascript frameworks or libraries like React may wipe your
+                changes. This is because of the reactive nature of the virtual
+                dom (vdom) which, depending on how components are made, might
+                render and rerender quickly. This means the element you targeted
+                has been destroyed and recreated, essentially causing your
+                changes to stop working or disappear.
+            </p>
+            <h4>Bookmark drawer is not visible</h4>
+            <p>
+                Depending on what your bookmarklet is doing, there might be a
+                requirement that the bookmark drawer below the search bar needs
+                to be visible in order for it to execute properly. I ran into
+                this when the bookmarklet I created wrote to the user's
+                clipboard when they clicked the bookmarklet. It showed an error
+                in the console and didn't run until I reenabled the bookmark
+                drawer.
+            </p>
+            <h4>Chrome browser on Android devices</h4>
+            <p>
+                Bookmarks saved on desktop are accessible on your mobile
+                devices. Clicking on your bookmarklet from the bookmark menu
+                will not work. You need to access your bookmarklet through the
+                search bar dropdown by typing the exact name of your bookmarklet
+                in the search bar in order for it to execute it.
+            </p>
+        </AccordionItem>
+    </div>
+</section>
 
 <style lang="scss">
     .hero {
@@ -512,8 +485,11 @@ pageSpeedInsights(window.location.href);`;
             display: flex;
         }
     }
+    .editor-wrapper {
+        min-height: 200px;
+    }
     :global(.codemirror-wrapper) {
-        box-shadow: 12px 12px 0 0 #ffffff;
+        box-shadow: 12px 12px 0 0 #fff;
     }
     :global(.cm-scroller) {
         min-height: 200px;
@@ -540,9 +516,7 @@ pageSpeedInsights(window.location.href);`;
             min-width: 167px;
         }
     }
-    :global(.button.button-bookmarklet) {
-        margin-left: auto;
-    }
+
     :global(.button.button-toggle-code) {
         margin-left: 0;
         margin-right: 20px;
@@ -563,6 +537,16 @@ pageSpeedInsights(window.location.href);`;
         order: 3;
         padding-right: 65px;
     }
+    .button-reset {
+        &:hover {
+            background-color: var(--pink-color);
+        }
+    }
+    .button.button-bookmarklet {
+        margin-left: auto;
+        background-color: #f78da7;
+        line-height: 20px;
+    }
     .button-copy {
         position: absolute;
         cursor: pointer;
@@ -582,21 +566,24 @@ pageSpeedInsights(window.location.href);`;
             background-color: var(--turquoise-color);
         }
     }
-    .content-section {
+    .faq-section {
         h2 {
             text-align: center;
             margin-bottom: 40px;
+        }
+        h4 {
+            margin-bottom: 5px;
         }
         p {
             margin: 0;
         }
     }
-    .content-section,
-    .example-section {
+    .faq-section,
+    .examples-section {
         position: relative;
         z-index: 1;
     }
-    .example-section {
+    .examples-section {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -606,12 +593,12 @@ pageSpeedInsights(window.location.href);`;
             margin-bottom: 40px;
         }
     }
-    .example-content {
+    .examples-content {
         display: grid;
         grid-template-columns: auto auto;
         gap: 30px;
     }
-    .example-cta {
+    .examples-cta {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -636,7 +623,7 @@ pageSpeedInsights(window.location.href);`;
         transition: var(--global-transition);
         backface-visibility: hidden;
         padding: 16px 16px 60px;
-        border-left: 1px solid var(--black-color);
+        border-left: 2px solid var(--black-color);
         h2 {
             font-size: 1.3rem;
             margin-top: 35px;
@@ -717,9 +704,7 @@ pageSpeedInsights(window.location.href);`;
         :global(.button-create) {
             margin-right: 20px;
         }
-        :global(.button-reset) {
-            margin-right: 20px;
-        }
+
         .inline-field-group {
             flex-direction: column;
             width: 100%;
@@ -737,7 +722,7 @@ pageSpeedInsights(window.location.href);`;
                 width: fill-available;
             }
         }
-        :global(.button-bookmarklet) {
+        .button-bookmarklet {
             margin-right: 0;
         }
         :global(.button.button-toggle-code) {
@@ -746,13 +731,14 @@ pageSpeedInsights(window.location.href);`;
         #output {
             width: 100%;
         }
-        .example-content {
+        .examples-content {
             display: block;
         }
-        .example-image {
+        .examples-image {
             width: 100%;
+            padding-top: 70px;
         }
-        .example-cta {
+        .examples-cta {
             text-align: center;
             .button {
                 align-self: center;

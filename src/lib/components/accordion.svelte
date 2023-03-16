@@ -14,6 +14,7 @@
         on:click={() => (isExpanded = !isExpanded)}>{title}</button
     >
 </h3>
+
 {#key isExpanded}
     <section
         id={`${id}-panel`}
@@ -32,9 +33,11 @@
         margin-top: 27px;
         margin-bottom: 0;
     }
+
     section {
         padding: 35px 15px 0;
     }
+
     .button {
         border-radius: 0;
         box-shadow: 12px 12px 0 0 var(--pink-color);
