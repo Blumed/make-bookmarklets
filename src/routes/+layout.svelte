@@ -134,6 +134,22 @@
     .footer-section {
         padding-block: 10px;
     }
+
+    .contact-section {
+        padding: 0 40px 40px;
+        text-align: center;
+        h2 {
+            text-align: right;
+            max-width: 360px;
+            margin-bottom: 0;
+        }
+        p {
+            display: inline-block;
+        }
+        .button {
+            margin-left: 20px;
+        }
+    }
     .boring-section {
         display: flex;
         justify-content: space-between;
@@ -151,21 +167,6 @@
             + :is(p, ul) {
                 margin-top: 5px;
             }
-        }
-    }
-    .contact-section {
-        padding: 40px;
-        text-align: center;
-        h2 {
-            text-align: right;
-            max-width: 360px;
-            margin-bottom: 0;
-        }
-        p {
-            display: inline-block;
-        }
-        .button {
-            margin-left: 20px;
         }
     }
 

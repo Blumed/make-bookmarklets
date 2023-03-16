@@ -70,6 +70,16 @@
         &[aria-expanded="true"]::before {
             transform: rotate(90deg) translateY(-6px);
         }
+
+        &:hover {
+            transform: translate(3px, 3px);
+            box-shadow: 6px 6px 0 0 var(--pink-color) !important;
+        }
+
+        &:active {
+            transform: translate(6px, 6px);
+            box-shadow: 3px 3px 0 0 var(--pink-color) !important;
+        }
     }
     @media (max-width: 768px) {
         .button {

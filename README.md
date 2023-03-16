@@ -13,4 +13,4 @@ Bookmarklets are great for micro to macro automation. Extend what you can do in 
 
 - [x] Automatic minification and uglification
 
-- [x] Works on mobile devices
+- [x] Works great on all devices

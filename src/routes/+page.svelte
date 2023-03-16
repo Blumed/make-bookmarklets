@@ -359,7 +359,7 @@
             </p>
         </Accordion>
         <Accordion id="item-2" title="Why Bookmarklets?">
-            <h4>Why use a bookmarklet? From micro to minor task automation.</h4>
+            <h4>Why use a bookmarklet? From micro to macro task automation</h4>
             <p>
                 Is there a Zoom url you constantly need to copy & paste for
                 quick impromptu meetings? Use the clipboard API to copy the url
@@ -425,6 +425,18 @@
                 in the search bar in order for it to execute it.
             </p>
         </AccordionItem>
+        <Accordion id="item-4" title="Are Bookmarklets Safe?">
+            <h4>Absolutely, as long as you understand what they are doing</h4>
+            <p>
+                Some basic common sense should be applied when using any old
+                bookmarklet you find laying around the internet. Make sure the
+                site and source is credible. Always copy and paste them into an
+                editor for safe reading. Be weary of bookmarklets that execute
+                external scripts. If they do have external scripts generate a
+                readable version so you can understand what it is doing. You can
+                also skip all this and make your own 😊
+            </p>
+        </Accordion>
     </div>
 </section>
 
@@ -572,6 +584,7 @@
             margin-bottom: 40px;
         }
         h4 {
+            margin-top: 0;
             margin-bottom: 5px;
         }
         p {
