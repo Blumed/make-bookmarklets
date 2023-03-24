@@ -150,7 +150,8 @@
                 >
                 {#if codeOutput !== ""}
                     <a href={codeOutput} class="button button-bookmarklet"
-                       on:click={(e) => ( e.preventDefault())}>{bookmarkletName}</a>
+                       on:click={(e) => ( e.preventDefault())}>{bookmarkletName}</a
+                    >
                 {/if}
             </div>
         </div>
