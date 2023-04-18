@@ -171,7 +171,6 @@
     }
 
     #dialog-contact {
-        width: 100%;
         max-width: 400px;
         form {
             display: grid;
@@ -205,7 +204,7 @@
         }
     }
     @media (max-width: 768px) {
-        #dialog-privacy-policy {
+        .dialog {
             margin-inline: 15px;
         }
         .contact-section {

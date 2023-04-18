@@ -1,9 +1,14 @@
-export const useExample1 = `if(document.designMode === "off") {
-    document.designMode = "on";
-  } else {
-    document.designMode = "off"; 
-  }`;  
-export const useExample2 = `const capture = async () => {
+export const useExampleBookmarklet1 = `const source = "https://assets.make-bookmarklets.com/thanks-ac42db36.mp3";
+const audio = new Audio();
+
+audio.addEventListener("load", () => {
+  audio.play();
+}, true);
+
+audio.src = source;
+audio.autoplay = true;`;
+
+export const useExampleBookmarklet2 = `const capture = async () => {
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
     const video = document.createElement("video");
@@ -21,7 +26,7 @@ export const useExample2 = `const capture = async () => {
   };
   
   capture();`;
-export const useExample3 = `function pageSpeedInsights(currentSite){
+export const useExampleBookmarklet3 = `function pageSpeedInsights(currentSite){
     try {
      window.open('https://pagespeed.web.dev/report?url=' + currentSite, '_blank', 'noopener,noreferrer'); 
     } catch (error){
@@ -29,17 +34,82 @@ export const useExample3 = `function pageSpeedInsights(currentSite){
     }
   };
   pageSpeedInsights(window.location.href);`;
-  export const useExample4 = `try {   
+  export const useExampleBookmarklet4 = `try {   
     navigator.clipboard.writeText('ADD WHAT EVER TEXT YOU WANT HERE');
   } catch(error) {
     console.log('Copy To Clipboard Bookmarklet did not work: ', error);
   }`;  
-export const useExample5 = `try {
-    const highlightedText = window.getSelection();
-     window.open('http://google.com/search?q="' + highlightedText + '"');
-  }  catch(error) {
-    console.log('Google If Text Indexed Bookmarklet did not work: ', error);
-  }`;
+export const useExampleBookmarklet5 = `try {
+  const highlightedText = window.getSelection().toString();
+   window.open('http://google.com/search?q=site:' + window.location.hostname + ' "' + highlightedText + '"');
+}  catch(error) {
+  console.log('Google If Text Indexed Bookmarklet did not work: ', error);
+}`;
+export const useExampleSnippet1 = `const container = document.createElement('div');
+container.className = 'xxxxxx_wraper_xxxxx';
+container.textContent = 'Give me some data, or maybe some buttons?';
+container.styles = 'width: 100%;letter-spacing:1px;background-color:pink;text-align:right;font-family:helvetica !important;font-weight:100;padding-inline: 60px;color:#161613;margin:auto;top:0;right:0;left:0;position:fixed;z-index:2147483647;font-size:18px;text-rendering:optimizeLegibility;text-align:center;line-height:36px;';
+container.setAttribute('style', container.styles);
+document.body.appendChild(container);
+
+const close = document.createElement('button');
+close.setAttribute('type', 'button');
+close.className = 'xxxxxx_close_xxxxx';
+close.textContent = 'x';
+close.setAttribute('style', 'position:absolute;left:30px;top:8px !important;background-color:white;border-radius:50%;color:black;z-index:30;padding:0;font-size:15px;font-weight:100;width:20px;height:20px;cursor:pointer;display:flex;justify-content:center;align-items:flex-start;border:1px solid black;line-height:16px;');
+close.onclick = () => container.remove();
+container.appendChild(close);`;
+export const useExampleSnippet2 = `const container = document.createElement('dialog');
+
+function createDialog() {
+  const close = document.createElement('button');
+
+  container.setAttribute('style', 'width: 100%;letter-spacing:1px;background-color:pink;font-family:helvetica !important;font-weight:100;border-radius:12px;padding-inline:60px;color:#161613;border-color:#fff;position:fixed;inset:0;margin:auto;width:100%;max-width:400px;z-index:2147483647;font-size:18px;text-rendering:optimizeLegibility;text-align:left;line-height:36px;');
+  
+  close.setAttribute('style', 'position:absolute;right:10px;top:8px !important;background-color:white;border-radius:50%;color:black;z-index:30;padding:0  0 0 1px;font-size:15px;font-weight:100;width:20px;height:20px;cursor:pointer;display:flex;justify-content:center;align-items:flex-start;border:1px solid black;line-height:16px;');
+  close.textContent = 'x';
+  close.onclick = () => container.remove();
+  
+  document.body.appendChild(container);
+  container.appendChild(close);
+
+  createContent('h1');
+  createContent('h2');
+  createContent('h3');
+  createContent('h4');
+  createContent('h5');
+  createContent('h6');
+  container.showModal();
+} 
+
+function createContent(header) {
+  const p = document.createElement('p');
+  const strong = document.createElement('strong');
+  
+  strong.textContent = document.getElementsByTagName(header).length;
+  
+  p.textContent = header + ': ';
+  
+  container.appendChild(p);
+  p.appendChild(strong);
+}
+
+createDialog();`;
+export const useGist = `async function getGist(url) {
+  try {
+      const response = await fetch(url);
+      const gistData = await response.text();
+    
+      if (!response.ok) {
+        throw new Error("Network response was not OK");
+      }
+    
+      return eval(gistData);
+  } catch (err) {
+      console.log("error", err);
+  }
+};
+getGist('https://gist.githubusercontent.com/Blumed/7e81d2ad5f3f0ca54d9ff6964dbc8bb8/raw/435d8e7d1481d26429a8b4d6fba8b63ef441de79/another-file.js')`;
 export const config = {
   parserOptions: {
       ecmaVersion: 2019,

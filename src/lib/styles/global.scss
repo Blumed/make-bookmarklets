@@ -124,6 +124,13 @@ a {
         }
     }
 
+    &.fill-blue {
+        background-color: var(--turquoise-color);
+        &:hover {
+            background-color: var(--turquoise-color);
+        }
+    }
+
     &.button-small {
         padding: 12px 15px;
         font-size: 0.875rem;

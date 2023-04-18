@@ -29,12 +29,14 @@
 	<meta content="website" property="og:type" />
 	<meta content={seo.description} property="og:description" />
 	<meta content={baseUrl} property="og:url" />
-	<meta content={ogImage} property="og:image" />
+	<meta content={baseUrl + ogImage} property="og:image" />
 	<!-- Twitter -->
 	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:site" content="@CullanLuther" />
 	<meta content="Make Bookmarklets · Make It Easy" property="twitter:title" />
 	<meta content={seo.description} property="twitter:description" />
-	<meta content={twitterImage} property="twitter:image" />
+	<meta name="twitter:creator" content="@CullanLuther" />
+	<meta content={baseUrl + twitterImage} property="twitter:image" />
 	<meta name="color-scheme" content="dark light" />
 	<link rel="canonical" href={canonicalUrl} />
 </svelte:head>
