@@ -20,7 +20,8 @@
 
     let errorMessage = "";
     let gistMultipleFiles = false;
-    let gistErrorMessage = false;
+    let gistInvalid = false;
+    let gistErrorMessage: null | string = null;
     let gistFiles: null | any[] = null;
     let selectedGist: number | string = "";
     let codeInputGist = "";
@@ -130,16 +131,22 @@
         openSidebar: boolean,
         id: string
     ) {
-        if (
-            id === "examples-menu" ||
-            id === "snippets-menu" ||
-            id === "gists-menu"
-        )
-            // () => (toggleExamples = false);
+        if (id === "gists-menu") {
             codeInput = "";
-        codeInput = getCodeInput;
-        if (openSidebar) toggleSidebar(id);
-        scrollToEditor();
+            codeInput = getCodeInput;
+
+            if (openSidebar) toggleSidebar(id);
+            scrollToEditor();
+        } else if (id === "examples-menu" || id === "snippets-menu") {
+            codeInput = "";
+            codeInputGist = "";
+            gistUrl = "";
+            selectedGist = "";
+            codeInput = getCodeInput;
+
+            if (openSidebar) toggleSidebar(id);
+            scrollToEditor();
+        }
     }
 
     function thereCanBeOnlyMenu(menu: string) {
@@ -183,7 +190,7 @@
             new URL(str);
             return true;
         } catch (err) {
-            gistErrorMessage = true;
+            gistInvalid = true;
             return false;
         }
     }
@@ -193,15 +200,24 @@
             const response = await fetch(`https://api.github.com/gists/${url}`);
             const gistData = await response.json();
 
-            gistFiles = Object.values(gistData.files);
+            gistFiles = Object.values(gistData.files).filter(
+                (javascriptFile) => javascriptFile?.language === "JavaScript"
+            );
 
+            if (gistFiles.length === 0) {
+                gistInvalid = true;
+                gistErrorMessage = "No JS files Detected";
+                return;
+            }
             if (gistFiles.length === 1) {
                 selectedGist = 0;
+                gistMultipleFiles = false;
             } else {
+                selectedGist = "";
                 gistMultipleFiles = true;
             }
         } catch (err) {
-            gistErrorMessage = true;
+            gistInvalid = true;
             console.log("error", err);
         }
     }
@@ -211,12 +227,12 @@
             gistUrl.startsWith("https://gist.github.com/") &&
             isValidUrl(gistUrl)
         ) {
-            gistErrorMessage = false;
+            gistInvalid = false;
             const gistHash = gistUrl.split("/")[4];
 
             getGist(gistHash);
         } else {
-            gistErrorMessage = true;
+            gistInvalid = true;
         }
     }
 
@@ -252,8 +268,11 @@ getGist('https://gist.githubusercontent.com/${
     $: if (codeInput !== "" && errorMessage === "Put some code in there!")
         errorMessage = "";
     $: codeInput = codeInput;
-    $: if (gistUrl === "" && gistErrorMessage) gistErrorMessage = false;
+    $: if (gistUrl === "" && gistInvalid) gistInvalid = false;
+    gistErrorMessage = null;
+
     $: if (gistUrl === "") gistMultipleFiles = false;
+    $: gistUrl, console.log("selectedGist", selectedGist);
     $: selectedGist, selectedGist !== "" && createGistBookmarklet();
 </script>
 
@@ -473,7 +492,7 @@ getGist('https://gist.githubusercontent.com/${
         />
         <button
             type="button"
-            class="button button-small  fill-white"
+            class="button button-small fill-white"
             on:click={() =>
                 addToCodeEditor(useExampleBookmarklet1, true, "examples-menu")}
             >Add To Editor</button
@@ -496,7 +515,7 @@ getGist('https://gist.githubusercontent.com/${
         />
         <button
             type="button"
-            class="button button-small  fill-white"
+            class="button button-small fill-white"
             on:click={() =>
                 addToCodeEditor(useExampleBookmarklet2, true, "examples-menu")}
             >Add To Editor</button
@@ -519,7 +538,7 @@ getGist('https://gist.githubusercontent.com/${
         />
         <button
             type="button"
-            class="button button-small  fill-white"
+            class="button button-small fill-white"
             on:click={() =>
                 addToCodeEditor(useExampleBookmarklet3, true, "examples-menu")}
             >Add To Editor</button
@@ -541,7 +560,7 @@ getGist('https://gist.githubusercontent.com/${
         />
         <button
             type="button"
-            class="button button-small  fill-white"
+            class="button button-small fill-white"
             on:click={() =>
                 addToCodeEditor(useExampleBookmarklet4, true, "examples-menu")}
             >Add To Editor</button
@@ -565,7 +584,7 @@ getGist('https://gist.githubusercontent.com/${
         />
         <button
             type="button"
-            class="button button-small  fill-white"
+            class="button button-small fill-white"
             on:click={() =>
                 addToCodeEditor(useExampleBookmarklet5, true, "examples-menu")}
             >Add To Editor</button
@@ -634,7 +653,7 @@ getGist('https://gist.githubusercontent.com/${
         />
         <button
             type="button"
-            class="button button-small  fill-white"
+            class="button button-small fill-white"
             on:click={() =>
                 addToCodeEditor(useExampleSnippet1, true, "snippets-menu")}
             >Add To Editor</button
@@ -657,7 +676,7 @@ getGist('https://gist.githubusercontent.com/${
         />
         <button
             type="button"
-            class="button button-small  fill-white"
+            class="button button-small fill-white"
             on:click={() =>
                 addToCodeEditor(useExampleSnippet2, true, "snippets-menu")}
             >Add To Editor</button
@@ -737,12 +756,14 @@ getGist('https://gist.githubusercontent.com/${
             bind:value={gistUrl}
             on:keyup={() => setTimeout(() => validateGist(null), 1000)}
         />
-        {#if gistErrorMessage}
+        {#if gistInvalid}
             <div class="error-message" in:slide out:slide>
-                <span>Please enter a valid gist url</span>
+                <span
+                    >{gistErrorMessage ?? "Please enter a valid gist url"}</span
+                >
             </div>
         {/if}
-        {#if !gistErrorMessage && gistMultipleFiles}
+        {#if !gistInvalid && gistMultipleFiles}
             <select
                 class="button gist-file-select fill-white button-small"
                 in:slide
@@ -1169,6 +1190,7 @@ getGist('https://gist.githubusercontent.com/${
         box-shadow: none;
     }
     .gist-file-select {
+        width: 100%;
         margin-top: 30px;
     }
     .mobile-only {
