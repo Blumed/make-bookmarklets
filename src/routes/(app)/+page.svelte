@@ -206,7 +206,7 @@
 
             if (gistFiles.length === 0) {
                 gistInvalid = true;
-                gistErrorMessage = "No JS files Detected";
+                gistErrorMessage = "No JS files detected";
                 return;
             }
             if (gistFiles.length === 1) {
@@ -218,6 +218,7 @@
             }
         } catch (err) {
             gistInvalid = true;
+            gistErrorMessage = null;
             console.log("error", err);
         }
     }
@@ -272,7 +273,6 @@ getGist('https://gist.githubusercontent.com/${
     gistErrorMessage = null;
 
     $: if (gistUrl === "") gistMultipleFiles = false;
-    $: gistUrl, console.log("selectedGist", selectedGist);
     $: selectedGist, selectedGist !== "" && createGistBookmarklet();
 </script>
 
@@ -690,7 +690,7 @@ getGist('https://gist.githubusercontent.com/${
             <img
                 class="gists-image"
                 loading="lazy"
-                src="/planning.webp"
+                src="https://assets.make-bookmarklets.com/planning.webp"
                 width="400"
                 height="400"
                 role="presentation"
@@ -972,6 +972,7 @@ getGist('https://gist.githubusercontent.com/${
     }
     .editor-wrapper {
         min-height: 200px;
+        background: green;
     }
     :global(.codemirror-wrapper) {
         box-shadow: 12px 12px 0 0 #fff;
