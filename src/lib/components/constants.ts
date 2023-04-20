@@ -95,21 +95,6 @@ function createContent(header) {
 }
 
 createDialog();`;
-export const useGist = `async function getGist(url) {
-  try {
-      const response = await fetch(url);
-      const gistData = await response.text();
-    
-      if (!response.ok) {
-        throw new Error("Network response was not OK");
-      }
-    
-      return eval(gistData);
-  } catch (err) {
-      console.log("error", err);
-  }
-};
-getGist('https://gist.githubusercontent.com/Blumed/7e81d2ad5f3f0ca54d9ff6964dbc8bb8/raw/435d8e7d1481d26429a8b4d6fba8b63ef441de79/another-file.js')`;
 export const config = {
   parserOptions: {
       ecmaVersion: 2019,

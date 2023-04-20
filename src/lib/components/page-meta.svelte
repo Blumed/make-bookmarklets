@@ -22,6 +22,25 @@
 
 <svelte:head>
 	<title>{pageTitle}</title>
+	<link
+		rel="preload"
+		href="/fonts/LexendDeca-Bold.woff2"
+		as="font"
+		type="font/woff2"
+	/>
+	<link
+		rel="preload"
+		href="/fonts/LexendDeca-ExtraLight.woff2"
+		as="font"
+		type="font/woff2"
+	/>
+	<link
+		rel="preload"
+		href="/fonts/LexendDeca-Regular.woff2"
+		as="font"
+		type="font/woff2"
+	/>
+	<link rel="preload" as="image" href="/flat-bookmark.svg" />
 	<meta name="description" content={metaDescription} />
 	<!-- Open Graph -->
 	<meta content="Make Bookmarklets" property="og:site_name" />

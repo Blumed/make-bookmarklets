@@ -20,9 +20,10 @@
 
     let errorMessage = "";
     let gistMultipleFiles = false;
-    let gistInvalid = false;
+    let gistValid = true;
     let gistErrorMessage: null | string = null;
     let gistFiles: null | any[] = null;
+    let gistEditorMessage = "";
     let selectedGist: number | string = "";
     let codeInputGist = "";
     let codeInput = "";
@@ -85,6 +86,7 @@
         codeInputGist = "";
         gistUrl = "";
         selectedGist = "";
+        gistEditorMessage = "";
         clickedMobileInstructions = false;
     }
 
@@ -190,7 +192,7 @@
             new URL(str);
             return true;
         } catch (err) {
-            gistInvalid = true;
+            gistValid = false;
             return false;
         }
     }
@@ -205,7 +207,7 @@
             );
 
             if (gistFiles.length === 0) {
-                gistInvalid = true;
+                gistValid = false;
                 gistErrorMessage = "No JS files detected";
                 return;
             }
@@ -217,7 +219,7 @@
                 gistMultipleFiles = true;
             }
         } catch (err) {
-            gistInvalid = true;
+            gistValid = false;
             gistErrorMessage = null;
             console.log("error", err);
         }
@@ -228,12 +230,12 @@
             gistUrl.startsWith("https://gist.github.com/") &&
             isValidUrl(gistUrl)
         ) {
-            gistInvalid = false;
+            gistValid = true;
             const gistHash = gistUrl.split("/")[4];
 
             getGist(gistHash);
         } else {
-            gistInvalid = true;
+            gistValid = false;
         }
     }
 
@@ -263,13 +265,15 @@ getGist('https://gist.githubusercontent.com/${
         }/${gistFiles && gistFiles[selectedGist]?.raw_url.split("/")[4]}/raw/${
             gistFiles && gistFiles[selectedGist]?.filename
         }?');`;
+        gistEditorMessage =
+            "It is unnecessary to edit code below. It is only a snapshot of your gist for verification purposes. Your generated bookmarklet will contain the selected gist url";
     }
 
     $: if (codeInput === "") reset();
     $: if (codeInput !== "" && errorMessage === "Put some code in there!")
         errorMessage = "";
     $: codeInput = codeInput;
-    $: if (gistUrl === "" && gistInvalid) gistInvalid = false;
+    $: if (gistUrl === "" && !gistValid) gistValid = true;
     gistErrorMessage = null;
 
     $: if (gistUrl === "") gistMultipleFiles = false;
@@ -302,18 +306,28 @@ getGist('https://gist.githubusercontent.com/${
             src="/flat-bookmark.svg"
             role="presentation"
             alt="ribbon"
+            loading="eager"
         />
     </div>
 </section>
 
 <div class="section code-editor" id="editor">
     <div class="container-small">
+        {#if codeInputGist !== ""}
+            <div class="gist-message" in:slide out:slide>
+                <span>{gistEditorMessage}</span>
+            </div>
+        {/if}
         <div class="editor-wrapper">
             <CodeEditor bind:codeEditor={codeInput} />
         </div>
 
         {#if errorMessage !== ""}
-            <div class="error-message" in:slide out:slide>
+            <div
+                class={`error-message ${codeInputGist && "gist-message"}`}
+                in:slide
+                out:slide
+            >
                 <span>{errorMessage}</span>
             </div>
         {/if}
@@ -690,7 +704,7 @@ getGist('https://gist.githubusercontent.com/${
             <img
                 class="gists-image"
                 loading="lazy"
-                src="https://assets.make-bookmarklets.com/planning.webp"
+                src="/planning.webp"
                 width="400"
                 height="400"
                 role="presentation"
@@ -707,8 +721,8 @@ getGist('https://gist.githubusercontent.com/${
                     asked myself the same question when I first stumbled upon
                     this feature. A common use case is keeping your bookmarklets
                     version controlled. Another reason may be to keep url
-                    characters low. Most modern browses character counts are so
-                    high you would probably never reach them but, Edge for
+                    character count low. Most modern browses character counts
+                    are so high you would probably never reach them. Edge for
                     example is caped at 2,083 characters, so using this
                     technique would be helpful.
                 </p>
@@ -736,16 +750,14 @@ getGist('https://gist.githubusercontent.com/${
     <aside>
         <h2>Create Gist Bookmarklet</h2>
         <p>
-            The code in your gist should be saved as a vanilla javascript file.
-            If you have multiple files in the gist I offer a file select. You
-            can create bookmarklets from your public or private github gists.
+            The github gist you select should be valid javascript. Only gists
+            with filenames which end with dot js will be let in. Both public and
+            private gists work. <a
+                href="https://gist.github.com/"
+                target="_blank"
+                rel="noopener noreferrer"><strong>Go grab your gists</strong></a
+            >
         </p>
-        <a
-            href="https://gist.github.com/"
-            class="button button-small fill-white gists-button"
-            target="_blank"
-            rel="noopener noreferrer">Go Grab Your Gists</a
-        >
         <label for="gist-url" class="gist-label">Gist Url</label>
         <input
             type="text"
@@ -756,14 +768,14 @@ getGist('https://gist.githubusercontent.com/${
             bind:value={gistUrl}
             on:keyup={() => setTimeout(() => validateGist(null), 1000)}
         />
-        {#if gistInvalid}
+        {#if !gistValid}
             <div class="error-message" in:slide out:slide>
                 <span
                     >{gistErrorMessage ?? "Please enter a valid gist url"}</span
                 >
             </div>
         {/if}
-        {#if !gistInvalid && gistMultipleFiles}
+        {#if gistValid && gistMultipleFiles}
             <select
                 class="button gist-file-select fill-white button-small"
                 in:slide
@@ -970,9 +982,28 @@ getGist('https://gist.githubusercontent.com/${
             display: flex;
         }
     }
+    .gist-message {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 2px solid white;
+        color: var(--clay-color);
+        background-color: #282c34;
+        box-shadow: 12px 12px 0 0 #ffffff;
+    }
+    .gist-message + .editor-wrapper:before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: rgb(255, 255, 255, 0.1);
+        z-index: 1;
+        pointer-events: none;
+    }
     .editor-wrapper {
         min-height: 200px;
-        background: green;
+        position: relative;
+        z-index: 1;
     }
     :global(.codemirror-wrapper) {
         box-shadow: 12px 12px 0 0 #fff;
