@@ -721,10 +721,9 @@ getGist('https://gist.githubusercontent.com/${
                     asked myself the same question when I first stumbled upon
                     this feature. A common use case is keeping your bookmarklets
                     version controlled. Another reason may be to keep url
-                    character count low. Most modern browses character counts
-                    are so high you would probably never reach them. Edge for
-                    example is caped at 2,083 characters, so using this
-                    technique would be helpful.
+                    character count low. This allows you to create a static
+                    bookmarklet and the code it points to can update
+                    independently inside your gist.
                 </p>
                 <label
                     for="gists-menu"
