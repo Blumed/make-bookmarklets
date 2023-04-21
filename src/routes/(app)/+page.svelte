@@ -450,6 +450,7 @@ getGist('https://gist.githubusercontent.com/${
                 class="examples-image"
                 width="400"
                 height="400"
+                loading="eager"
                 src="/flame-no-connection.webp"
                 role="presentation"
                 title="Mind Expanded Illustration created by Thierry Fousse"
@@ -1018,6 +1019,8 @@ getGist('https://gist.githubusercontent.com/${
         color: var(--dark-red-color);
         background-color: pink;
         box-shadow: 12px 12px 0 0 #ffffff;
+        position: relative;
+        z-index: 2;
     }
     .code-output-controls {
         display: flex;
