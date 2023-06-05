@@ -1,5 +1,6 @@
 <script lang="ts">
     import { browser } from "$app/environment";
+    import { page } from "$app/stores";
     import Seo from "$lib/components/page-meta.svelte";
     import AccordionItem from "$lib/components/accordion.svelte";
     import CodeEditor from "$lib/components/editors/js-editor.svelte";
@@ -36,6 +37,26 @@
     let toggleGists = false;
     let clickedMobileInstructions = false;
 
+    const gistMenu = "gists-menu";
+
+    if (browser && document.location.origin === $page.url.origin) {
+        const searchParams = new URLSearchParams(document.location.search);
+        if (searchParams.has("share")) {
+            let sharedBookmarklet = searchParams.get("share");
+            sharedBookmarklet = sharedBookmarklet?.replace(
+                "javascript:(function(){",
+                ""
+            );
+            sharedBookmarklet = sharedBookmarklet.replace("}());", "");
+            try {
+                codeInput = decodeURI(sharedBookmarklet);
+            } catch (err) {
+                console.log(sharedBookmarklet);
+                console.log(err);
+                errorMessage = err;
+            }
+        }
+    }
     async function minification(str: string) {
         const result = await minify(str, {});
         return result.code;
@@ -90,6 +111,13 @@
         clickedMobileInstructions = false;
     }
 
+    function createShareCode() {
+        const encode = encodeURIComponent(codeOutput);
+        return navigator.clipboard.writeText(
+            "https://make-bookmarklets.com/?share=" + encode
+        );
+    }
+
     function toggleSidebar(id: string) {
         if (browser) {
             const sidebarMenu = document.getElementById(id) as HTMLElement;
@@ -133,7 +161,7 @@
         openSidebar: boolean,
         id: string
     ) {
-        if (id === "gists-menu") {
+        if (id === gistMenu) {
             codeInput = "";
             codeInput = getCodeInput;
 
@@ -158,7 +186,7 @@
                 toggleSnippets = false;
             }
             if (toggleGists) {
-                toggleSidebar("gists-menu");
+                toggleSidebar(gistMenu);
                 toggleGists = false;
             }
             toggleExamples = !toggleExamples;
@@ -169,12 +197,12 @@
                 toggleExamples = false;
             }
             if (toggleGists) {
-                toggleSidebar("gists-menu");
+                toggleSidebar(gistMenu);
                 toggleGists = false;
             }
             toggleSnippets = !toggleSnippets;
         }
-        if (menu === "gists-menu") {
+        if (menu === gistMenu) {
             if (toggleExamples) {
                 toggleSidebar("examples-menu");
                 toggleExamples = false;
@@ -243,7 +271,7 @@
         addToCodeEditor(
             gistFiles && gistFiles[selectedGist].content,
             true,
-            "gists-menu"
+            gistMenu
         );
 
         codeInputGist = `async function getGist(url) {
@@ -280,7 +308,50 @@ getGist('https://gist.githubusercontent.com/${
     $: selectedGist, selectedGist !== "" && createGistBookmarklet();
 </script>
 
-<Seo title="Make it easy" pageCanonicalUrl="/" />
+<Seo title="Make it easy" pageCanonicalUrl="" />
+<svelte:head>
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [{
+            "@type": "Question",
+            "name": "What are Bookmarklets?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "What are bookmarklets? Teeny tiny Javascript applications stored in a bookmark url. Clicking the bookmark will launch it, so you can customize and extend your browsing experience."
+            }
+          }, {
+            "@type": "Question",
+            "name": "Why Bookmarklets?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "<b>Why use a bookmarklet? From micro to macro task automation</b><p>Is there a Zoom url you constantly need to copy & paste for quick impromptu meetings? Use the clipboard API to copy the url to your clipboard with a simple click of a bookmark.</p>"
+            }
+          }, {
+            "@type": "Question",
+            "name": "Why do bookmarklets stop working on specific sites?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "<ol><li>Sites with Content Security Policies</li><li>Global variable collision</li><li>Reactive elements</li><li>Bookmark drawer is not visible (On some browsers)</li></ol>"
+            }
+          }, {
+            "@type": "Question",
+            "name": "Are Bookmarklets Safe?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "<b>Absolutely, as long as you understand what they are doing</b><p>Some basic common sense should be applied when using any old bookmarklet you find laying around on the internet. Make sure the site and source is credible. Always copy and paste them into an editor for safe reading. Be weary of bookmarklets that execute external scripts. If they do have external scripts generate a readable version so you can understand what it is doing. You can also skip all this and make your own</p>"
+            }
+          }, {
+            "@type": "Question",
+            "name": "How to save bookmarklets on mobile?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":"<b>There is nothing fancy about saving bookmarklets on a mobile device. It is a manual process.:</b> <ol><li>Once you are done creating and testing your bookmarklet copy the script to your clipboard.</li><li>Favorite a page and then edit the bookmark in your browser settings.</li><li>Name it whatever you want then paste your script into the url field and once you're done click save.</li><li>You did it! Well done.</li></ol>"}
+            }]
+        }
+    </script>
+</svelte:head>
 
 <section class="hero section">
     <div class="container">
@@ -313,6 +384,7 @@ getGist('https://gist.githubusercontent.com/${
 
 <div class="section code-editor" id="editor">
     <div class="container-small">
+        <a href="#examples-section" class="sr-only">Skip Editor Section</a>
         {#if codeInputGist !== ""}
             <div class="gist-message" in:slide out:slide>
                 <span>{gistEditorMessage}</span>
@@ -351,6 +423,15 @@ getGist('https://gist.githubusercontent.com/${
                         class="button button-run-code fill-blue mobile-only"
                         >Run Code</a
                     >
+                    <button
+                        type="button"
+                        class="button button-share mobile-only"
+                        title="Share your bookmarklet with anyone!"
+                        on:click={createShareCode}
+                    >
+                        <img src="/share.svg" alt="" role="presentation" />
+                        <span class="sr-only">Share</span>
+                    </button>
                     <a
                         href={codeOutput}
                         on:click={(e) => e.preventDefault()}
@@ -389,7 +470,15 @@ getGist('https://gist.githubusercontent.com/${
                     on:click={() => (toggleBookmarklet = !toggleBookmarklet)}
                     >{`${toggleBookmarklet ? "Hide" : "Show"} Code`}
                 </button>
-
+                <button
+                    type="button"
+                    class="button button-share desktop-only"
+                    title="Share your bookmarklet with anyone!"
+                    on:click={createShareCode}
+                >
+                    <img src="/share.svg" alt="" role="presentation" />
+                    <span class="sr-only">Share</span>
+                </button>
                 {#if toggleBookmarklet && codeOutput !== ""}
                     <div
                         class="inline-field-group output-code-fields desktop-only"
@@ -443,7 +532,7 @@ getGist('https://gist.githubusercontent.com/${
     </div>
 </div>
 
-<section class="section examples-section">
+<section class="section examples-section" id="examples-section">
     <div class="container">
         <div class="examples-content">
             <img
@@ -699,7 +788,7 @@ getGist('https://gist.githubusercontent.com/${
     </aside>
 </div>
 
-<section class="section gists-section">
+<section class="section gists-section" id="create-a-bookmarklet-from-a-gist">
     <div class="container">
         <div class="gists-content">
             <img
@@ -743,7 +832,7 @@ getGist('https://gist.githubusercontent.com/${
     id="gists-menu"
     class="button-close"
     aria-hidden="true"
-    on:click={() => thereCanBeOnlyMenu("gists-menu")}
+    on:click={() => thereCanBeOnlyMenu(gistMenu)}
 />
 
 <div class="gists-sidebar">
@@ -1090,6 +1179,13 @@ getGist('https://gist.githubusercontent.com/${
             background-color: var(--turquoise-color);
         }
     }
+    .button-share {
+        padding: 10px;
+        margin-left: 0;
+        img {
+            width: 23px;
+        }
+    }
     .faq-section {
         h2 {
             text-align: center;
@@ -1293,7 +1389,9 @@ getGist('https://gist.githubusercontent.com/${
         :global(.button-create) {
             margin-right: 20px;
         }
-
+        .button-share {
+            margin-left: 20px;
+        }
         .inline-field-group {
             position: relative;
             flex-direction: column;

@@ -56,6 +56,11 @@
 	<meta content={seo.description} property="twitter:description" />
 	<meta name="twitter:creator" content="@CullanLuther" />
 	<meta content={baseUrl + twitterImage} property="twitter:image" />
-	<meta name="color-scheme" content="dark light" />
+	<meta name="color-scheme" content="#ec6e89" />
+	<meta
+		name="color-scheme"
+		media="(prefers-color-scheme: dark)"
+		content="#ec6e89"
+	/>
 	<link rel="canonical" href={canonicalUrl} />
 </svelte:head>
