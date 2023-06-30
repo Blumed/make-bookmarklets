@@ -29,7 +29,7 @@
 		"eslint-linter-browserify": "^8.34.0",
 		"eslint-plugin-svelte3": "^4.0.0",
 		"sass": "^1.58.2",
-		"svelte": "^3.54.0",
+		"svelte": "^4.0.0",
 		"svelte-check": "^3.0.1",
 		"svelte-codemirror-editor": "^1.1.0",
 		"svelte-sitemap": "^2.6.0",
