@@ -35,6 +35,7 @@
     let toggleSnippets = false;
     let toggleGists = false;
     let clickedMobileInstructions = false;
+    let files: any;
 
     async function minification(str: string) {
         const result = await minify(str, {});
@@ -70,7 +71,6 @@
                 } else {
                     codeOutput = "javascript:(function(){" + result + "}());";
                 }
-
                 return;
             })
             .catch((err) => {
@@ -268,6 +268,66 @@ getGist('https://gist.githubusercontent.com/${
         gistEditorMessage =
             "It is unnecessary to edit code below. It is only a snapshot of your gist for verification purposes. Your generated bookmarklet will contain the selected gist url";
     }
+    async function read(file) {
+        codeInput = await file.text();
+    }
+    async function save() {
+        if (browser) {
+            const suggestedName = `${new Date()
+                .toISOString()
+                .slice(0, 10)}-${new Date()
+                .toLocaleTimeString()
+                .replace(/( |:|\_)/g, "-")}.js`;
+            const options = {
+                suggestedName: suggestedName,
+                types: [
+                    {
+                        description: "Make Bookmarklet File",
+                        accept: {
+                            "text/javascript": [".js"],
+                        },
+                    },
+                ],
+            };
+            const supportsFileSystemAccess =
+                "showSaveFilePicker" in window &&
+                (() => {
+                    try {
+                        return window.self === window.top;
+                    } catch {
+                        return false;
+                    }
+                })();
+            if (supportsFileSystemAccess) {
+                try {
+                    const handle = await showSaveFilePicker(options);
+                    const writable = await handle.createWritable();
+                    await writable.write(codeInput);
+                    await writable.close();
+                    return;
+                } catch (err) {
+                    if (err.name !== "AbortError") {
+                        console.error(err.name, err.message);
+                        return;
+                    }
+                }
+            } else {
+                const blobURL = URL.createObjectURL(
+                    new Blob([codeInput], { type: "text/javascript" })
+                );
+                const a = document.createElement("a");
+                a.href = blobURL;
+                a.download = suggestedName;
+                a.style.display = "none";
+                document.body.append(a);
+                a.click();
+                setTimeout(() => {
+                    URL.revokeObjectURL(blobURL);
+                    a.remove();
+                }, 1000);
+            }
+        }
+    }
 
     $: if (codeInput === "") reset();
     $: if (codeInput !== "" && errorMessage === "Put some code in there!")
@@ -278,9 +338,16 @@ getGist('https://gist.githubusercontent.com/${
 
     $: if (gistUrl === "") gistMultipleFiles = false;
     $: selectedGist, selectedGist !== "" && createGistBookmarklet();
+
+    $: if (files) {
+        for (const file of files) {
+            read(file);
+            console.log(`${file.name}: ${file.size} bytes`);
+        }
+    }
 </script>
 
-<Seo title="Make it easy" pageCanonicalUrl="/" />
+<Seo title="Make Bookmarklets | Make it easy" pageCanonicalUrl="/" />
 
 <section class="hero section">
     <div class="container">
@@ -345,16 +412,24 @@ getGist('https://gist.githubusercontent.com/${
                     class="button button-reset fill-white"
                     on:click={reset}>Reset</button
                 >
+                <input hidden type="file" id="upload" accept=".js" bind:files />
+                <label class="button button-upload fill-white" for="upload"
+                    ><img src="/file.svg" alt="file upload icon" /> Up</label
+                >
+                <button
+                    type="button"
+                    class="button button-download fill-white"
+                    on:click={save}
+                    ><img
+                        src="/file.svg"
+                        alt="file download icon"
+                    />Down</button
+                >
                 {#if codeOutput !== ""}
                     <a
                         href={codeOutput}
                         class="button button-run-code fill-blue mobile-only"
                         >Run Code</a
-                    >
-                    <a
-                        href={codeOutput}
-                        on:click={(e) => e.preventDefault()}
-                        class="button button-bookmarklet">{bookmarkletName}</a
                     >
                 {/if}
             </div>
@@ -362,23 +437,8 @@ getGist('https://gist.githubusercontent.com/${
 
         {#if codeOutput !== ""}
             <div class="code-output-controls" in:slide out:slide>
-                <div class="inline-field-group desktop-only">
-                    <label for="name">Name your Bookmarklet</label>
-                    <input
-                        type="text"
-                        id="name"
-                        class="input"
-                        bind:value={bookmarkletName}
-                    />
-                    <button
-                        type="button"
-                        class="button-copy mobile-only"
-                        on:click={() =>
-                            navigator.clipboard.writeText(bookmarkletName)}
-                        >Copy</button
-                    >
-                </div>
                 <a
+                    role="button"
                     href={codeOutput}
                     class="button button-run-code fill-blue desktop-only"
                     >Run Code</a
@@ -389,6 +449,23 @@ getGist('https://gist.githubusercontent.com/${
                     on:click={() => (toggleBookmarklet = !toggleBookmarklet)}
                     >{`${toggleBookmarklet ? "Hide" : "Show"} Code`}
                 </button>
+                <div class="group-bookmarklet-output">
+                    <a
+                        role="button"
+                        href={codeOutput}
+                        on:click={(e) => e.preventDefault()}
+                        class="button button-bookmarklet">{bookmarkletName}</a
+                    >
+                    <div class="inline-field-group desktop-only">
+                        <label for="name">Name your Bookmarklet</label>
+                        <input
+                            type="text"
+                            id="name"
+                            class="input"
+                            bind:value={bookmarkletName}
+                        />
+                    </div>
+                </div>
 
                 {#if toggleBookmarklet && codeOutput !== ""}
                     <div
@@ -923,6 +1000,47 @@ getGist('https://gist.githubusercontent.com/${
             </ol>
         </Accordion>
     </div>
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [{
+            "@type": "Question",
+            "name": "What are Bookmarklets?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "What are bookmarklets? Teeny tiny Javascript applications stored in a bookmark url. Clicking the bookmark will launch it, so you can customize and extend your browsing experience."
+            }
+          }, {
+            "@type": "Question",
+            "name": "Why Bookmarklets?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "<b>Why use a bookmarklet? From micro to macro task automation</b><p>Is there a Zoom url you constantly need to copy & paste for quick impromptu meetings? Use the clipboard API to copy the url to your clipboard with a simple click of a bookmark.</p>"
+            }
+          }, {
+            "@type": "Question",
+            "name": "Why do bookmarklets stop working on specific sites?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "<ol><li>Sites with Content Security Policies</li><li>Global variable collision</li><li>Reactive elements</li><li>Bookmark drawer is not visible (On some browsers)</li></ol>"
+            }
+          }, {
+            "@type": "Question",
+            "name": "Are Bookmarklets Safe?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "<b>Absolutely, as long as you understand what they are doing</b><p>Some basic common sense should be applied when using any old bookmarklet you find laying around on the internet. Make sure the site and source is credible. Always copy and paste them into an editor for safe reading. Be weary of bookmarklets that execute external scripts. If they do have external scripts generate a readable version so you can understand what it is doing. You can also skip all this and make your own</p>"
+            }
+          }, {
+            "@type": "Question",
+            "name": "How to save bookmarklets on mobile?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":"<b>There is nothing fancy about saving bookmarklets on a mobile device. It is a manual process.:</b> <ol><li>Once you are done creating and testing your bookmarklet copy the script to your clipboard.</li><li>Favorite a page and then edit the bookmark in your browser settings.</li><li>Name it whatever you want then paste your script into the url field and once you're done click save.</li><li>You did it! Well done.</li></ol>"}
+            }]
+        }
+    </script>
 </section>
 
 <style lang="scss">
@@ -981,6 +1099,9 @@ getGist('https://gist.githubusercontent.com/${
         .buttons {
             display: flex;
         }
+        .button {
+            height: 50px;
+        }
     }
     .gist-message {
         height: 100%;
@@ -1025,6 +1146,7 @@ getGist('https://gist.githubusercontent.com/${
     .code-output-controls {
         display: flex;
         flex-wrap: wrap;
+        position: relative;
     }
     .inline-field-group {
         display: flex;
@@ -1043,7 +1165,10 @@ getGist('https://gist.githubusercontent.com/${
     .output-code-fields {
         width: calc(100% - 415px);
         margin: 0;
-        position: relative;
+        position: absolute;
+        left: 0;
+        max-width: 415px;
+        bottom: 0;
     }
     #output {
         width: 100%;
@@ -1061,12 +1186,28 @@ getGist('https://gist.githubusercontent.com/${
             background-color: var(--pink-color);
         }
     }
-    .button.button-bookmarklet {
+    .button-upload {
         margin-left: auto;
+    }
+    .button-upload,
+    .button-download {
+        display: flex;
+        align-items: center;
+    }
+    .button-download img {
+        transform: rotate(180deg);
+    }
+    .button.button-bookmarklet {
+        margin-bottom: 30px;
         background-color: #f78da7;
         line-height: 20px;
     }
+    .button-toggle-code {
+        height: 50px;
+    }
     .button-run-code {
+        height: 50px;
+        line-height: 17px;
         &.desktop-only {
             margin-right: 20px;
         }
@@ -1089,6 +1230,11 @@ getGist('https://gist.githubusercontent.com/${
         &:hover {
             background-color: var(--turquoise-color);
         }
+    }
+    .group-bookmarklet-output {
+        display: flex;
+        flex-direction: column;
+        margin-left: auto;
     }
     .faq-section {
         h2 {
@@ -1284,10 +1430,24 @@ getGist('https://gist.githubusercontent.com/${
         .code-input-controls {
             margin-block: 20px;
             .buttons {
-                display: block;
+                display: flex;
+                flex-wrap: wrap;
             }
         }
+        .button-create {
+            margin-top: 20px;
+        }
         .button-reset {
+            margin-right: 20px;
+        }
+        .button-upload {
+            width: fit-content;
+            margin-left: 0;
+            display: inline-flex;
+            margin-top: 20px;
+            margin-right: 20px;
+        }
+        .button-download {
             margin-right: 20px;
         }
         :global(.button-create) {
