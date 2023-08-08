@@ -25,44 +25,30 @@
                 <div class="features-section">
                     <h2>Esseeoh Features Include</h2>
                     <ul>
+                        <li>Its free</li>
                         <li>
-                            Validate meta tag existence and if content is filled
-                            out
+                            Unlike browser extensions Esseeoh can be installed
+                            on any browser and on any mobile or desktop device
                         </li>
                         <li>
-                            Displays minimal Opengraph and Twitter meta data for
-                            social sharing insight
+                            Auto updates so you always have the latest version
                         </li>
                         <li>
-                            Counts and validates against suggested length of all
-                            header tags
+                            Display and edit meta tags. Meta tags pertinent to
+                            SEO are also validated against suggested character
+                            counts
                         </li>
                         <li>
-                            Displays and counts all internal and external links
+                            Scroll to and highlight all header tags. Each tag
+                            can be edited and validated against suggested
+                            character counts
                         </li>
+                        <li>Count and list all internal and external links</li>
                         <li>
-                            Guardrails for showing the correct number of h1 tags
-                            on a the current page
+                            View Rich Text Snippets and checks for malformatted
+                            json
                         </li>
-                        <li>
-                            Edit and copy changes to meta tags and headers.
-                            Validation will continue while you edit so you can
-                            dial your text in to suggested lengths. Don't worry
-                            text changes will go back to normal after a page
-                            refresh
-                        </li>
-                        <li>Locate and scroll to headers</li>
-                        <li>Copy</li>
-                        <li>
-                            Displays the sites robots.txt and sitemap.xml files
-                            for easy inspection
-                        </li>
-                        <li>Can be installed on any device</li>
-                        <li>
-                            No tracking! This tool is 100% javascript running in
-                            your browser
-                        </li>
-                        <li>Works great on mobile devices</li>
+                        <li>View sitemap and checks for malformatted xml</li>
                     </ul>
                 </div>
             </header>

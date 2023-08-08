@@ -131,6 +131,13 @@ a {
         }
     }
 
+    &.fill-clay {
+        background-color: var(--clay-color);
+        &:hover {
+            background-color: var(--clay-color);
+        }
+    }
+
     &.button-small {
         padding: 12px 15px;
         font-size: 0.875rem;
