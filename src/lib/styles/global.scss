@@ -23,14 +23,16 @@
 :root {
     font-family: 'Lexend Deca', Arial, -apple-system, sans-serif;
     --font-base: 16px;
-    --clay-color: #edece8;
-    --pink-color: #ec6e89;
-    --red-color: #d53253;
-    --dark-red-color: #b80000;
-    --turquoise-color: #b9e7de;
-    --purple-color: #bc98cb;
+    --color-clay: #edece8;
+    --color-pink: #ec6e89;
+    --color-pinkish: #f78da7;
+    --color-red: #d53253;
+    --color-dark-red: #b80000;
+    --color-turquoise: #b9e7de;
+    --color-purple: #bc98cb;
+    --color-black: #161613;
+    --color-white: #ffffff;
     --global-transition: all 0.3s ease-in-out;
-    --black-color: #161613;
 }
 
 *, :after, :before {
@@ -40,8 +42,8 @@
 body {
     font-family: inherit;
     font-size: var(--font-base);
-    background-color: var(--clay-color);
-    color: var(--black-color);
+    background-color: var(--color-clay);
+    color: var(--color-black);
     margin: 0;
     overflow-x: hidden;
 }
@@ -59,7 +61,7 @@ li {
 }
 
 a {
-    color: var(--red-color);
+    color: var(--color-red);
     font-weight: 400;
     text-decoration: none;
 }
@@ -77,7 +79,7 @@ a {
 .input {
     padding: 10px;
     width: 100%;
-    border: 2px solid var(--black-color);
+    border: 2px solid var(--color-black);
     border-radius: 0.25rem;
 }
 
@@ -86,7 +88,7 @@ a {
     margin-inline: auto;
 }
 
-.button, [role="button"] {
+.button, [role="button"]:not(.button-custom) {
     font-family: inherit;
     display: inline-block;
     font-size: 16px;
@@ -94,10 +96,10 @@ a {
     letter-spacing: 1px;
     padding: 15px 20px;
     border: 2px solid currentColor;
-    color: var(--black-color);
+    color: var(--color-black);
     border-radius: 0.25rem;
     background-color: transparent;
-    box-shadow: 6px 6px 0 0 var(--black-color);
+    box-shadow: 6px 6px 0 0 var(--color-black);
     position: relative;
     user-select: none;
     -webkit-user-select: none;
@@ -109,32 +111,38 @@ a {
 
     &:hover {
         transform: translate(2px,2px);
-        box-shadow: 3px 3px 0 0 var(--black-color) !important;
+        box-shadow: 3px 3px 0 0 var(--color-black) !important;
     }
 
     &:active {
         transform: translate(4px,4px);
-        box-shadow: 1px 1px 0 0 var(--black-color) !important;
+        box-shadow: 1px 1px 0 0 var(--color-black) !important;
     }
 
     &.fill-white {
-        background-color: #ffffff;
+        background-color: var(--color-white);
         &:hover {
-            background-color: var(--turquoise-color);
+            background-color: var(--color-turquoise);
         }
     }
 
     &.fill-blue {
-        background-color: var(--turquoise-color);
+        background-color: var(--color-turquoise);
         &:hover {
-            background-color: var(--turquoise-color);
+            background-color: var(--color-turquoise);
+        }
+    }
+    &.fill-pink {
+        background-color: var(--color-pinkish);
+        &:hover {
+            background-color: var(--color-pinkish);
         }
     }
 
     &.fill-clay {
-        background-color: var(--clay-color);
+        background-color: var(--color-clay);
         &:hover {
-            background-color: var(--clay-color);
+            background-color: var(--color-clay);
         }
     }
 
@@ -149,12 +157,12 @@ a {
     z-index: 8;
     top: 16px;
     right: 32px;
-    background-color: #fff;
+    background-color: var(--color-white);
     margin: 0;
     cursor: pointer;
     width: 20px;
     height: 20px;
-    border: 0.15em solid var(--black-color);
+    border: 0.15em solid var(--color-black);
     border-radius: 0.15rem;
     overflow: hidden;
     &:checked {
@@ -164,7 +172,7 @@ a {
         content: "";
         width: 2px;
         height: 12px;
-        background-color: var(--black-color);
+        background-color: var(--color-black);
         display: block;
         top: 2px;
         left: calc(50% - 1px);
@@ -211,7 +219,7 @@ a {
 }
 
 .button-inline {
-    color: var(--red-color);
+    color: var(--color-red);
     font-weight: 400;
     cursor: pointer;
     border: 0;
@@ -226,6 +234,31 @@ a {
     margin-left: 20px;
 }
 
+.sr-only {
+	border: 0 !important;
+	clip: rect(1px, 1px, 1px, 1px) !important;
+	clip-path: inset(50%) !important;
+	height: 1px !important;
+	overflow: hidden !important;
+	margin: -1px !important;
+	padding: 0 !important;
+	position: absolute !important;
+	width: 1px !important;
+	white-space: nowrap !important;
+}
+
+.list-unstyled {
+    list-style: none;
+    padding-left: 0;
+    margin-block: 0;
+}
+
+@media (min-width: 769px) {
+    .mobile-only {
+        display: none;
+    }
+}
+
 @media (max-width: 768px) {
     .section {
         padding-block: 30px;
@@ -234,5 +267,9 @@ a {
     .button + .button {
         margin-top: 20px;
         margin-left: 0;
+    }
+
+    .desktop-only {
+        display: none;
     }
 }

@@ -1,11 +1,11 @@
 <script>
     import { browser } from "$app/environment";
     import "$lib/styles/global.scss";
-    // if (browser) {
-    //     setTimeout(() => {
-    //         window.location.href = "https://make-bookmarklets.com";
-    //     }, 1000);
-    // }
+    if (browser) {
+        setTimeout(() => {
+            window.location.href = "https://make-bookmarklets.com";
+        }, 500);
+    }
 </script>
 
 <svelte:head>
@@ -35,13 +35,13 @@
             alt="Goat Head"
             class="the-goat"
         />
-        <!-- <div class="chat-bubble">
+        <div class="chat-bubble">
             <p>
                 Sorry but <strong>{browser && window.location.pathname}</strong>
                 does not exist..... but I do.
                 <span>I'll send you on home.</span>
             </p>
-        </div> -->
+        </div>
     </div>
 </div>
 

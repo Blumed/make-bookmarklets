@@ -34,11 +34,11 @@ export const useExampleBookmarklet3 = `function pageSpeedInsights(currentSite){
     }
   };
   pageSpeedInsights(window.location.href);`;
-  export const useExampleBookmarklet4 = `try {   
+export const useExampleBookmarklet4 = `try {   
     navigator.clipboard.writeText('ADD WHAT EVER TEXT YOU WANT HERE');
   } catch(error) {
     console.log('Copy To Clipboard Bookmarklet did not work: ', error);
-  }`;  
+}`;  
 export const useExampleBookmarklet5 = `try {
   const highlightedText = window.getSelection().toString();
    window.open('http://google.com/search?q=site:' + window.location.hostname + ' "' + highlightedText + '"');
@@ -114,3 +114,16 @@ export const config = {
       "no-console": ["warn", "always"],
   },
 };
+
+export const colorPicker = `const abortController = new AbortController();
+async function sampleColorFromScreen(abortController) {
+  const eyeDropper = new EyeDropper();
+  try {
+    const result = await eyeDropper.open({signal: abortController.signal});
+    navigator.clipboard.writeText(result.sRGBHex);
+    return result.sRGBHex;
+  } catch (e) {
+    return null;
+  }
+}
+sampleColorFromScreen(abortController);`

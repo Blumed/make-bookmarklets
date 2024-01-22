@@ -40,7 +40,7 @@
 
     .button {
         border-radius: 0;
-        box-shadow: 12px 12px 0 0 var(--pink-color);
+        box-shadow: 12px 12px 0 0 var(--color-pink);
         line-height: 25px;
         padding-right: 50px;
         position: relative;
@@ -48,7 +48,7 @@
         &::after {
             content: "";
             width: 12px;
-            background-color: var(--red-color);
+            background-color: var(--color-red);
             height: 2px;
             position: absolute;
             right: 20px;
@@ -58,7 +58,7 @@
         &::before {
             content: "";
             width: 2px;
-            background-color: var(--red-color);
+            background-color: var(--color-red);
             height: 12px;
             position: absolute;
             right: 25px;
@@ -73,12 +73,12 @@
 
         &:hover {
             transform: translate(3px, 3px);
-            box-shadow: 6px 6px 0 0 var(--pink-color) !important;
+            box-shadow: 6px 6px 0 0 var(--color-pink) !important;
         }
 
         &:active {
             transform: translate(6px, 6px);
-            box-shadow: 3px 3px 0 0 var(--pink-color) !important;
+            box-shadow: 3px 3px 0 0 var(--color-pink) !important;
         }
     }
     @media (max-width: 768px) {

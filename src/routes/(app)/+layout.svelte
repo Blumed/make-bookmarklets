@@ -1,12 +1,13 @@
 <script lang="ts">
     import "$lib/styles/global.scss";
     import Heart from "$lib/components/heart-icon/heart.svelte";
+    import MainNavigation from "$lib/components/main-navigation.svelte";
     import { browser } from "$app/environment";
     let dialog: any;
     function toggleDialog(state: boolean, dialogName: string) {
         if (browser) {
             const dialogPrivacy = document.getElementById(
-                "dialog-privacy-policy"
+                "dialog-privacy-policy",
             );
             const dialogContact = document.getElementById("dialog-contact");
             if (dialogName === "privacy") dialog = dialogPrivacy;
@@ -17,7 +18,9 @@
     }
 </script>
 
-<main>
+<MainNavigation />
+
+<main id="skip-main-navigation">
     <slot />
 </main>
 
@@ -193,10 +196,10 @@
     }
 
     .dialog {
-        background-color: var(--clay-color);
-        border-color: var(--pink-color);
+        background-color: var(--color-clay);
+        border-color: var(--color-pink);
         border-radius: 0.25rem;
-        color: var(--black-color);
+        color: var(--color-black);
         &::backdrop {
             position: fixed;
             inset: 0px;

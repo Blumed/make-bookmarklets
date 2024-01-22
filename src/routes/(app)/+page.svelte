@@ -34,6 +34,7 @@
     let toggleExamples = false;
     let toggleSnippets = false;
     let toggleGists = false;
+    let toggleOptions = false;
     let clickedMobileInstructions = false;
     let files: any;
 
@@ -112,7 +113,7 @@
     function scrollToMobileInstructions() {
         if (browser) {
             const mobileInstruction = document.querySelector(
-                "#item-5-header"
+                "#item-5-header",
             ) as HTMLElement;
             mobileInstruction?.click();
             const mobileInstructionPosition =
@@ -131,7 +132,7 @@
     function addToCodeEditor(
         getCodeInput: string,
         openSidebar: boolean,
-        id: string
+        id: string,
     ) {
         if (id === "gists-menu") {
             codeInput = "";
@@ -203,7 +204,7 @@
             const gistData = await response.json();
 
             gistFiles = Object.values(gistData.files).filter(
-                (javascriptFile) => javascriptFile?.language === "JavaScript"
+                (javascriptFile) => javascriptFile?.language === "JavaScript",
             );
 
             if (gistFiles.length === 0) {
@@ -243,7 +244,7 @@
         addToCodeEditor(
             gistFiles && gistFiles[selectedGist].content,
             true,
-            "gists-menu"
+            "gists-menu",
         );
 
         codeInputGist = `async function getGist(url) {
@@ -268,66 +269,67 @@ getGist('https://gist.githubusercontent.com/${
         gistEditorMessage =
             "It is unnecessary to edit code below. It is only a snapshot of your gist for verification purposes. Your generated bookmarklet will contain the selected gist url";
     }
-    async function read(file) {
-        codeInput = await file.text();
-    }
-    async function save() {
-        if (browser) {
-            const suggestedName = `${new Date()
-                .toISOString()
-                .slice(0, 10)}-${new Date()
-                .toLocaleTimeString()
-                .replace(/( |:|\_)/g, "-")}.js`;
-            const options = {
-                suggestedName: suggestedName,
-                types: [
-                    {
-                        description: "Make Bookmarklet File",
-                        accept: {
-                            "text/javascript": [".js"],
-                        },
-                    },
-                ],
-            };
-            const supportsFileSystemAccess =
-                "showSaveFilePicker" in window &&
-                (() => {
-                    try {
-                        return window.self === window.top;
-                    } catch {
-                        return false;
-                    }
-                })();
-            if (supportsFileSystemAccess) {
-                try {
-                    const handle = await showSaveFilePicker(options);
-                    const writable = await handle.createWritable();
-                    await writable.write(codeInput);
-                    await writable.close();
-                    return;
-                } catch (err) {
-                    if (err.name !== "AbortError") {
-                        console.error(err.name, err.message);
-                        return;
-                    }
-                }
-            } else {
-                const blobURL = URL.createObjectURL(
-                    new Blob([codeInput], { type: "text/javascript" })
-                );
-                const a = document.createElement("a");
-                a.href = blobURL;
-                a.download = suggestedName;
-                a.style.display = "none";
-                document.body.append(a);
-                a.click();
-                setTimeout(() => {
-                    URL.revokeObjectURL(blobURL);
-                    a.remove();
-                }, 1000);
-            }
-        }
-    }
+    // async function read(file) {
+    //     codeInput = await file.text();
+    // }
+
+    // async function save() {
+    //     if (browser) {
+    //         const suggestedName = `${new Date()
+    //             .toISOString()
+    //             .slice(0, 10)}-${new Date()
+    //             .toLocaleTimeString()
+    //             .replace(/( |:|\_)/g, "-")}.js`;
+    //         const options = {
+    //             suggestedName: suggestedName,
+    //             types: [
+    //                 {
+    //                     description: "Make Bookmarklet File",
+    //                     accept: {
+    //                         "text/javascript": [".js"],
+    //                     },
+    //                 },
+    //             ],
+    //         };
+    //         const supportsFileSystemAccess =
+    //             "showSaveFilePicker" in window &&
+    //             (() => {
+    //                 try {
+    //                     return window.self === window.top;
+    //                 } catch {
+    //                     return false;
+    //                 }
+    //             })();
+    //         if (supportsFileSystemAccess) {
+    //             try {
+    //                 const handle = await showSaveFilePicker(options);
+    //                 const writable = await handle.createWritable();
+    //                 await writable.write(codeInput);
+    //                 await writable.close();
+    //                 return;
+    //             } catch (err) {
+    //                 if (err.name !== "AbortError") {
+    //                     console.error(err.name, err.message);
+    //                     return;
+    //                 }
+    //             }
+    //         } else {
+    //             const blobURL = URL.createObjectURL(
+    //                 new Blob([codeInput], { type: "text/javascript" }),
+    //             );
+    //             const a = document.createElement("a");
+    //             a.href = blobURL;
+    //             a.download = suggestedName;
+    //             a.style.display = "none";
+    //             document.body.append(a);
+    //             a.click();
+    //             setTimeout(() => {
+    //                 URL.revokeObjectURL(blobURL);
+    //                 a.remove();
+    //             }, 1000);
+    //         }
+    //     }
+    // }
 
     $: if (codeInput === "") reset();
     $: if (codeInput !== "" && errorMessage === "Put some code in there!")
@@ -339,12 +341,12 @@ getGist('https://gist.githubusercontent.com/${
     $: if (gistUrl === "") gistMultipleFiles = false;
     $: selectedGist, selectedGist !== "" && createGistBookmarklet();
 
-    $: if (files) {
-        for (const file of files) {
-            read(file);
-            console.log(`${file.name}: ${file.size} bytes`);
-        }
-    }
+    // $: if (files) {
+    //     for (const file of files) {
+    //         read(file);
+    //         console.log(`${file.name}: ${file.size} bytes`);
+    //     }
+    // }
 </script>
 
 <Seo title="Make Bookmarklets | Make it easy" pageCanonicalUrl="/" />
@@ -387,11 +389,67 @@ getGist('https://gist.githubusercontent.com/${
         {/if}
         <div class="editor-wrapper">
             <CodeEditor bind:codeEditor={codeInput} />
+            <!-- <div class="editor-options">
+                <input hidden type="file" id="upload" accept=".js" bind:files />
+                <label
+                    class="button-option button-custom"
+                    for="upload"
+                    role="button"
+                    title="Upload Javascript"
+                    ><img src="/file.svg" alt="file upload icon" /> Upload File</label
+                >
+                <button
+                    type="button"
+                    class="button-option"
+                    title="Download Javascript"
+                    on:click={save}
+                    ><img src="/file.svg" alt="file download icon" />Download
+                    File</button
+                >
+            </div> -->
+            <!-- <button
+                type="button"
+                class="button-options"
+                on:click={() => (toggleOptions = !toggleOptions)}
+                >More Options</button
+            > -->
         </div>
-
+        <!-- {#if toggleOptions}
+            <div class="editor-drawer drawer-options" in:slide out:slide>
+                <div class="external-files">
+                    <p>Save or Restore your work</p>
+                    <input
+                        hidden
+                        type="file"
+                        id="upload"
+                        accept=".js"
+                        bind:files
+                    />
+                    <label
+                        class="button button-upload fill-white"
+                        for="upload"
+                        role="button"
+                        title="Upload Javascript"
+                        ><img src="/file.svg" alt="file upload icon" /> Up</label
+                    >
+                    <button
+                        type="button"
+                        class="button button-download fill-white"
+                        title="Download Javascript"
+                        on:click={save}
+                        ><img
+                            src="/file.svg"
+                            alt="file download icon"
+                        />Down</button
+                    >
+                </div>
+            </div>
+        {/if} -->
         {#if errorMessage !== ""}
             <div
-                class={`error-message ${codeInputGist && "gist-message"}`}
+                class={`editor-drawer error-message ${
+                    codeInputGist && "gist-message"
+                }`}
                 in:slide
                 out:slide
             >
@@ -411,19 +469,6 @@ getGist('https://gist.githubusercontent.com/${
                     type="button"
                     class="button button-reset fill-white"
                     on:click={reset}>Reset</button
-                >
-                <input hidden type="file" id="upload" accept=".js" bind:files />
-                <label class="button button-upload fill-white" for="upload"
-                    ><img src="/file.svg" alt="file upload icon" /> Up</label
-                >
-                <button
-                    type="button"
-                    class="button button-download fill-white"
-                    on:click={save}
-                    ><img
-                        src="/file.svg"
-                        alt="file download icon"
-                    />Down</button
                 >
                 {#if codeOutput !== ""}
                     <a
@@ -893,7 +938,7 @@ getGist('https://gist.githubusercontent.com/${
                         addToCodeEditor(
                             useExampleBookmarklet4,
                             false,
-                            "examples-menu"
+                            "examples-menu",
                         )}>Example</button
                 >.
             </p>
@@ -1068,9 +1113,11 @@ getGist('https://gist.githubusercontent.com/${
         margin-bottom: 40px;
         padding-right: 431px;
         span {
-            text-shadow: -1px -1px 0 var(--black-color),
-                1px -1px 0 var(--black-color), -1px 1px 0 var(--black-color),
-                1px 1px 0 var(--black-color);
+            text-shadow:
+                -1px -1px 0 var(--color-black),
+                1px -1px 0 var(--color-black),
+                -1px 1px 0 var(--color-black),
+                1px 1px 0 var(--color-black);
             color: white;
             font-size: 5.3rem;
         }
@@ -1109,9 +1156,9 @@ getGist('https://gist.githubusercontent.com/${
         align-items: center;
         padding: 1rem;
         border-bottom: 2px solid white;
-        color: var(--clay-color);
+        color: var(--color-clay);
         background-color: #282c34;
-        box-shadow: 12px 12px 0 0 #ffffff;
+        box-shadow: 12px 12px 0 0 #fff;
     }
     .gist-message + .editor-wrapper:before {
         content: "";
@@ -1122,26 +1169,36 @@ getGist('https://gist.githubusercontent.com/${
         pointer-events: none;
     }
     .editor-wrapper {
-        min-height: 200px;
+        min-height: 230px;
         position: relative;
         z-index: 1;
-    }
-    :global(.codemirror-wrapper) {
         box-shadow: 12px 12px 0 0 #fff;
+        background-color: #282c34;
     }
+    // :global(.codemirror-wrapper) {
+    //     box-shadow: 12px 12px 0 0 #fff;
+    // }
     :global(.cm-scroller) {
         min-height: 200px;
+    }
+    .external-files {
+        display: flex;
+    }
+    .editor-drawer {
+        padding: 1rem;
+        box-shadow: 12px 12px 0 0 #fff;
+        position: relative;
+        z-index: 2;
     }
     .error-message {
         height: 100%;
         display: flex;
         align-items: center;
-        padding: 1rem;
-        color: var(--dark-red-color);
+        color: var(--color-dark-red);
         background-color: pink;
-        box-shadow: 12px 12px 0 0 #ffffff;
-        position: relative;
-        z-index: 2;
+    }
+    .drawer-options {
+        background-color: var(--color-turquoise);
     }
     .code-output-controls {
         display: flex;
@@ -1173,7 +1230,7 @@ getGist('https://gist.githubusercontent.com/${
     #output {
         width: 100%;
         padding: 10px;
-        border: 2px solid var(--black-color);
+        border: 2px solid var(--color-black);
         border-radius: 0.25rem;
         display: flex;
         margin-top: 20px;
@@ -1183,7 +1240,7 @@ getGist('https://gist.githubusercontent.com/${
     }
     .button-reset {
         &:hover {
-            background-color: var(--pink-color);
+            background-color: var(--color-pink);
         }
     }
     .button-upload {
@@ -1216,19 +1273,19 @@ getGist('https://gist.githubusercontent.com/${
         position: absolute;
         cursor: pointer;
         right: 0;
-        color: var(--black-color);
+        color: var(--color-black);
         height: 38.5px;
         top: 20px;
         padding-inline: 10px;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
-        border: 2px solid var(--black-color);
+        border: 2px solid var(--color-black);
         border-top-right-radius: 0.25rem;
         border-bottom-right-radius: 0.25rem;
-        background-color: var(--clay-color);
+        background-color: var(--color-clay);
         transition: var(--global-transition);
         &:hover {
-            background-color: var(--turquoise-color);
+            background-color: var(--color-turquoise);
         }
     }
     .group-bookmarklet-output {
@@ -1309,12 +1366,12 @@ getGist('https://gist.githubusercontent.com/${
         overflow-y: auto;
         font-size: 0.875rem;
         z-index: 6;
-        color: var(--black-color);
-        background-color: var(--clay-color);
+        color: var(--color-black);
+        background-color: var(--color-clay);
         transition: var(--global-transition);
         backface-visibility: hidden;
         padding: 16px 16px 60px;
-        border-left: 2px solid var(--black-color);
+        border-left: 2px solid var(--color-black);
         h2 {
             font-size: 1.3rem;
             margin-top: 35px;
@@ -1397,11 +1454,11 @@ getGist('https://gist.githubusercontent.com/${
             height: auto;
             text-align: left;
             padding-bottom: 0;
-            background-color: var(--pink-color);
+            background-color: var(--color-pink);
             overflow: inherit;
             header::after {
                 content: "";
-                background-color: var(--pink-color);
+                background-color: var(--color-pink);
                 z-index: -1;
                 height: 100px;
                 width: 100%;
@@ -1495,7 +1552,7 @@ getGist('https://gist.githubusercontent.com/${
             width: 100%;
         }
         .mobile-bookmark-instructions {
-            background-color: var(--clay-color);
+            background-color: var(--color-clay);
             padding: 10px 30px 10px;
             border-radius: 0.25rem;
         }

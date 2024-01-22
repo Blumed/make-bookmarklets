@@ -2,11 +2,12 @@
     import "$lib/styles/global.scss";
     import Heart from "$lib/components/heart-icon/heart.svelte";
     import { browser } from "$app/environment";
+    import MainNavigation from "$lib/components/main-navigation.svelte";
     let dialog: any;
     function toggleDialog(state: boolean, dialogName: string) {
         if (browser) {
             const dialogPrivacy = document.getElementById(
-                "dialog-privacy-policy"
+                "dialog-privacy-policy",
             );
             const dialogContact = document.getElementById("dialog-contact");
             if (dialogName === "privacy") dialog = dialogPrivacy;
@@ -17,50 +18,9 @@
     }
 </script>
 
-<main>
-    <section class="hero section">
-        <div class="container">
-            <header>
-                <h1><span>Esseeoh<br /></span> Bookmarklet</h1>
-                <div class="features-section">
-                    <h2>Esseeoh Features Include</h2>
-                    <ul>
-                        <li>Its free</li>
-                        <li>
-                            Unlike browser extensions Esseeoh can be installed
-                            on any browser and on any mobile or desktop device
-                        </li>
-                        <li>
-                            Auto updates so you always have the latest version
-                        </li>
-                        <li>
-                            Display and edit meta tags. Meta tags pertinent to
-                            SEO are also validated against suggested character
-                            counts
-                        </li>
-                        <li>
-                            Scroll to and highlight all header tags. Each tag
-                            can be edited and validated against suggested
-                            character counts
-                        </li>
-                        <li>Count and list all internal and external links</li>
-                        <li>
-                            View Rich Text Snippets and checks for malformatted
-                            json
-                        </li>
-                        <li>View sitemap and checks for malformatted xml</li>
-                    </ul>
-                </div>
-            </header>
-            <img
-                class="ribbon"
-                src="/flat-bookmark.svg"
-                role="presentation"
-                alt="ribbon"
-                loading="eager"
-            />
-        </div>
-    </section>
+<MainNavigation />
+
+<main id="skip-main-navigation">
     <slot />
 </main>
 
@@ -174,55 +134,6 @@
 </dialog>
 
 <style lang="scss">
-    .hero {
-        display: flex;
-        align-items: center;
-        padding-bottom: 0;
-    }
-    .container,
-    .code-editor {
-        position: relative;
-        z-index: 1;
-    }
-    .ribbon {
-        position: absolute;
-        z-index: -1;
-        top: -139px;
-        left: 980px;
-        height: 1029px;
-    }
-    h1 {
-        font-size: 5rem;
-        line-height: 76px;
-        margin-top: 0;
-        margin-bottom: 40px;
-        padding-right: 431px;
-        span {
-            text-shadow: -1px -1px 0 var(--black-color),
-                1px -1px 0 var(--black-color), -1px 1px 0 var(--black-color),
-                1px 1px 0 var(--black-color);
-            color: white;
-            font-size: 5.3rem;
-        }
-    }
-    .features-section {
-        margin-inline: auto;
-        max-width: 903px;
-        padding-right: 115px;
-        h2 {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-        }
-        ul {
-            padding-left: 23px;
-            margin-top: 10px;
-            margin-bottom: 0;
-        }
-        li {
-            list-style: circle;
-            line-height: 24px;
-        }
-    }
     .footer-section {
         padding-block: 10px;
     }
@@ -285,10 +196,10 @@
     }
 
     .dialog {
-        background-color: var(--clay-color);
-        border-color: var(--pink-color);
+        background-color: var(--color-clay);
+        border-color: var(--color-pink);
         border-radius: 0.25rem;
-        color: var(--black-color);
+        color: var(--color-black);
         &::backdrop {
             position: fixed;
             inset: 0px;
@@ -296,51 +207,51 @@
         }
     }
     @media (max-width: 768px) {
-        .ribbon {
-            width: 100%;
-            inset: 0;
-            object-fit: cover;
-            height: 100%;
-            top: 342px;
-            overflow: inherit;
-        }
-        .hero {
-            height: auto;
-            text-align: left;
-            padding-bottom: 0;
-            background-color: var(--pink-color);
-            overflow: inherit;
-            header::after {
-                content: "";
-                background-color: var(--pink-color);
-                z-index: -1;
-                height: 100px;
-                width: 100%;
-                display: block;
-                left: 0;
-                position: absolute;
-            }
-            .container {
-                position: static;
-            }
-        }
-        .features-section {
-            padding-right: 0;
-            h2 {
-                font-size: 1.1rem;
-                margin-bottom: 0;
-            }
-        }
-        h1 {
-            font-size: 2.4rem;
-            line-height: 46px;
-            margin-bottom: 20px;
-            padding-right: 0;
-            span {
-                letter-spacing: 1.5px;
-                font-size: 2.7rem;
-            }
-        }
+        // .ribbon {
+        //     width: 100%;
+        //     inset: 0;
+        //     object-fit: cover;
+        //     height: 100%;
+        //     top: 342px;
+        //     overflow: inherit;
+        // }
+        // .hero {
+        //     height: auto;
+        //     text-align: left;
+        //     padding-bottom: 0;
+        //     background-color: var(--color-pink);
+        //     overflow: inherit;
+        //     header::after {
+        //         content: "";
+        //         background-color: var(--color-pink);
+        //         z-index: -1;
+        //         height: 100px;
+        //         width: 100%;
+        //         display: block;
+        //         left: 0;
+        //         position: absolute;
+        //     }
+        //     .container {
+        //         position: static;
+        //     }
+        // }
+        // .features-section {
+        //     padding-right: 0;
+        //     h2 {
+        //         font-size: 1.1rem;
+        //         margin-bottom: 0;
+        //     }
+        // }
+        // h1 {
+        //     font-size: 2.4rem;
+        //     line-height: 46px;
+        //     margin-bottom: 20px;
+        //     padding-right: 0;
+        //     span {
+        //         letter-spacing: 1.5px;
+        //         font-size: 2.7rem;
+        //     }
+        // }
         .dialog {
             margin-inline: 15px;
         }
