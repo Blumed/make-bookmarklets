@@ -2,18 +2,18 @@
     import { browser } from "$app/environment";
     import Seo from "$lib/components/page-meta.svelte";
     import AccordionItem from "$lib/components/accordion.svelte";
-    import CodeEditor from "$lib/components/editors/js-editor.svelte";
+    import CodeEditor from "$lib/components/editor.svelte";
 
     import { slide } from "svelte/transition";
     import {
-        useExampleBookmarklet1,
-        useExampleBookmarklet2,
-        useExampleBookmarklet3,
-        useExampleBookmarklet4,
-        useExampleBookmarklet5,
-        useExampleSnippet1,
-        useExampleSnippet2,
-    } from "$lib/components/constants";
+        playMP3Recording,
+        fullWebpageScreenShot,
+        openCurrentPageGooglePageSpeedInsights,
+        copyToClipboard,
+        googleHighlightedText,
+        tippyTopUI,
+        dialogUI,
+    } from "$lib/components/code-snippets";
 
     import { minify } from "terser";
     import Accordion from "$lib/components/accordion.svelte";
@@ -38,58 +38,6 @@
     let clickedMobileInstructions = false;
     let files: any;
 
-    async function minification(str: string) {
-        const result = await minify(str, {});
-        return result.code;
-    }
-
-    function result() {
-        if (codeInputGist !== "") {
-            return minification(codeInputGist)
-                .then((result) => {
-                    errorMessage = "";
-                    if (result === "") {
-                        errorMessage =
-                            "Sorry something went wrong creating your gist bookmarklet 😅";
-                    } else {
-                        codeOutput =
-                            "javascript:(function(){" + result + "}());";
-                    }
-
-                    return;
-                })
-                .catch((err) => {
-                    codeOutput = "";
-                    return (errorMessage = err);
-                });
-        }
-
-        return minification(codeInput)
-            .then((result) => {
-                errorMessage = "";
-                if (result === "") {
-                    errorMessage = "Put some code in there!";
-                } else {
-                    codeOutput = "javascript:(function(){" + result + "}());";
-                }
-                return;
-            })
-            .catch((err) => {
-                codeOutput = "";
-                return (errorMessage = err);
-            });
-    }
-
-    function reset() {
-        codeOutput = "";
-        codeInput = "";
-        errorMessage = "";
-        codeInputGist = "";
-        gistUrl = "";
-        selectedGist = "";
-        gistEditorMessage = "";
-        clickedMobileInstructions = false;
-    }
 
     function toggleSidebar(id: string) {
         if (browser) {
@@ -508,7 +456,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleBookmarklet1}
+            value={playMP3Recording}
             rows="8"
             readonly
         />
@@ -516,7 +464,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleBookmarklet1, true, "examples-menu")}
+                addToCodeEditor(playMP3Recording, true, "examples-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -531,7 +479,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleBookmarklet2}
+            value={fullWebpageScreenShot}
             rows="8"
             readonly
         />
@@ -539,7 +487,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleBookmarklet2, true, "examples-menu")}
+                addToCodeEditor(fullWebpageScreenShot, true, "examples-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -554,7 +502,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleBookmarklet3}
+            value={openCurrentPageGooglePageSpeedInsights}
             rows="8"
             readonly
         />
@@ -562,7 +510,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleBookmarklet3, true, "examples-menu")}
+                addToCodeEditor(openCurrentPageGooglePageSpeedInsights, true, "examples-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -576,7 +524,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleBookmarklet4}
+            value={copyToClipboard}
             rows="8"
             readonly
         />
@@ -584,7 +532,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleBookmarklet4, true, "examples-menu")}
+                addToCodeEditor(copyToClipboard, true, "examples-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -600,7 +548,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleBookmarklet5}
+            value={googleHighlightedText}
             rows="8"
             readonly
         />
@@ -608,7 +556,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleBookmarklet5, true, "examples-menu")}
+                addToCodeEditor(googleHighlightedText, true, "examples-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -642,8 +590,7 @@ getGist('https://gist.githubusercontent.com/${
                     role="button"
                     class="button fill-white"
                     tabindex="0"
-                    >{`${toggleSnippets ? "Hide" : "Show"} Snippets`}</label
-                >
+                    >{`${toggleSnippets ? "Hide" : "Show"} Snippets`}</label>
             </div>
         </div>
     </div>
@@ -669,7 +616,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleSnippet1}
+            value={tippyTopUI}
             rows="8"
             readonly
         />
@@ -677,7 +624,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleSnippet1, true, "snippets-menu")}
+                addToCodeEditor(tippyTopUI, true, "snippets-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -692,7 +639,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleSnippet2}
+            value={dialogUI}
             rows="8"
             readonly
         />
@@ -700,7 +647,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleSnippet2, true, "snippets-menu")}
+                addToCodeEditor(dialogUI, true, "snippets-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -821,7 +768,7 @@ getGist('https://gist.githubusercontent.com/${
                     class="button-inline"
                     on:click={() =>
                         addToCodeEditor(
-                            useExampleBookmarklet4,
+                            copyToClipboard,
                             false,
                             "examples-menu",
                         )}>Example</button

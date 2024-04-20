@@ -1,6 +1,6 @@
 <script>
     import Hero from "$lib/components/hero.svelte";
-    import CodeEditor from "$lib/components/editors/js-editor.svelte";
+    import CodeEditor from "$lib/components/editor.svelte";
 
     export let data;
     export let codeEditor;

@@ -4,12 +4,11 @@
     import { linter, lintGutter } from "@codemirror/lint";
     import * as eslint from "eslint-linter-browserify";
     import { oneDark } from "@codemirror/theme-one-dark";
-    import { config } from "$lib/components/constants";
     import { slide } from "svelte/transition";
     import { minify } from "terser";
 
     export let codeEditor: string = "";
-console.log('codeEditor', codeEditor);
+
     let errorMessage = "";
     let gistMultipleFiles = false;
     let gistValid = true;
@@ -91,6 +90,27 @@ console.log('codeEditor', codeEditor);
 
     $: if (gistUrl === "") gistMultipleFiles = false;
     $: selectedGist, selectedGist !== "" && createGistBookmarklet();
+
+    // Code merrior config
+    const config = {
+        parserOptions: {
+            ecmaVersion: 2019,
+            sourceType: "module",
+        },
+        env: {
+            browser: true,
+            node: true,
+        },
+        rules: {
+            semi: ["warn", "always"],
+            "valid-typeof": ["error", "always"],
+            "no-unused-vars": ["error", "always"],
+            "no-unreachable": ["error", "always"],
+            "no-dupe-args": ["error", "always"],
+            "no-dupe-else-if": ["error", "always"],
+            "no-console": ["warn", "always"],
+        },
+    };
 </script>
 
 <CodeMirror
@@ -103,6 +123,7 @@ console.log('codeEditor', codeEditor);
         linter(esLint(new eslint.Linter(), config)),
     ]}
 />
+
 {#if errorMessage !== ""}
     <div
         class={`editor-drawer error-message ${codeInputGist && "gist-message"}`}
