@@ -426,7 +426,6 @@ getGist('https://gist.githubusercontent.com/${
                 </p>
                 <label
                     for="examples-menu"
-                    role="button"
                     class="button fill-white"
                     tabindex="0"
                     >{`${toggleExamples ? "Hide" : "Show"} Examples`}</label
@@ -1116,9 +1115,6 @@ getGist('https://gist.githubusercontent.com/${
         width: 100%;
         margin-top: 30px;
     }
-    .mobile-only {
-        display: none;
-    }
     .mobile-bookmark-instructions {
         li {
             margin-bottom: 15px;
@@ -1170,73 +1166,6 @@ getGist('https://gist.githubusercontent.com/${
                 font-size: 2.7rem;
             }
         }
-        .code-input-controls {
-            margin-block: 20px;
-            .buttons {
-                display: flex;
-                flex-wrap: wrap;
-            }
-        }
-        .button-create {
-            margin-top: 20px;
-        }
-        .button-reset {
-            margin-right: 20px;
-        }
-        .button-upload {
-            width: fit-content;
-            margin-left: 0;
-            display: inline-flex;
-            margin-top: 20px;
-            margin-right: 20px;
-        }
-        .button-download {
-            margin-right: 20px;
-        }
-        :global(.button-create) {
-            margin-right: 20px;
-        }
-
-        .inline-field-group {
-            position: relative;
-            flex-direction: column;
-            width: 100%;
-            margin-right: 0;
-            margin-bottom: 20px;
-            align-items: flex-start;
-            order: 1;
-            label {
-                display: block;
-                margin-bottom: 3px;
-            }
-            .input {
-                margin-top: 0 !important;
-            }
-            #name {
-                min-width: inherit;
-                width: -moz-available;
-                width: -webkit-fill-available;
-                width: fill-available;
-            }
-        }
-        .button-copy {
-            top: 23px;
-        }
-        .button-mobile-instructions {
-            order: 2;
-            line-height: 22px;
-        }
-        .button-bookmarklet {
-            display: none;
-            margin-right: 0;
-        }
-        :global(.button.button-toggle-code) {
-            order: 2;
-            margin-top: 0;
-        }
-        #output {
-            width: 100%;
-        }
         .mobile-bookmark-instructions {
             background-color: var(--color-clay);
             padding: 10px 30px 10px;
@@ -1255,13 +1184,6 @@ getGist('https://gist.githubusercontent.com/${
         .gists-image {
             width: 100%;
             height: 100%;
-        }
-
-        .mobile-only {
-            display: inline-block;
-        }
-        .desktop-only {
-            display: none;
         }
     }
 </style>

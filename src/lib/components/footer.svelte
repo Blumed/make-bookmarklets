@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { browser } from "$app/environment";
     import Heart from "$lib/components/heart-icon/heart.svelte";
     import DialogContact from '$lib/components/dialogs/contact.svelte';
     import DialogPrivacy from '$lib/components/dialogs/privacy.svelte';

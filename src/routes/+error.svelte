@@ -1,11 +1,6 @@
 <script>
     import { browser } from "$app/environment";
     import "$lib/styles/global.scss";
-    // if (browser) {
-    //     setTimeout(() => {
-    //         window.location.href = "https://make-bookmarklets.com";
-    //     }, 1000);
-    // }
 </script>
 
 <svelte:head>
@@ -35,13 +30,6 @@
             alt="Goat Head"
             class="the-goat"
         />
-        <!-- <div class="chat-bubble">
-            <p>
-                Sorry but <strong>{browser && window.location.pathname}</strong>
-                does not exist..... but I do.
-                <span>I'll send you on home.</span>
-            </p>
-        </div> -->
     </div>
 </div>
 
@@ -79,27 +67,7 @@
         position: relative;
         z-index: -1;
     }
-    .chat-bubble {
-        background-image: url(/chat-bubble.svg);
-        background-size: contain;
-        background-repeat: no-repeat;
-        position: absolute;
-        width: 410px;
-        height: 407px;
-        top: 45%;
-        left: 18%;
-        p {
-            padding-inline: 49px;
-            text-align: left;
-            font-size: 2rem;
-            margin-top: 130px;
-            line-height: 35px;
-            span {
-                margin-top: 5px;
-                display: block;
-            }
-        }
-    }
+
     @keyframes four {
         0% {
             transform: rotate(0);
@@ -125,13 +93,6 @@
         }
         100% {
             transform: rotate(-1800deg);
-        }
-    }
-    @media (max-width: 768px) {
-        .chat-bubble {
-            display: none;
-            left: 0;
-            width: 100%;
         }
     }
 </style>

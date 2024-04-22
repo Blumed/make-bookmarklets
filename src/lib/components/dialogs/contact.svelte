@@ -1,6 +1,6 @@
 <button
 type="button"
-class="button fill-white"
+class="button fill-white button-contact"
 on:click={() => document.getElementById("dialog-contact").showModal()}>Contact</button
 >
 
@@ -45,6 +45,10 @@ on:click={() => document.getElementById("dialog-contact").showModal()}>Contact</
 </dialog>
 
 <style lang="scss">
+    .button-contact {
+            margin-left: 20px;
+    }
+
     .dialog {
         background-color: var(--color-clay);
         border-color: var(--color-pink);
@@ -77,14 +81,22 @@ on:click={() => document.getElementById("dialog-contact").showModal()}>Contact</
             padding-inline: 20px;
         }
 
-        @media (max-width: 768px) {
-            margin-inline: 15px;
-        }
+
     }
 
     .button-close {
         position: absolute;
         top: 16px;
         right: 32px;
+    }
+
+    @media (max-width: 768px) {
+        .dialog {
+            margin-inline: 15px;
+        }
+        
+        .button-contact {
+            margin-left: 0;
+        }
     }
 </style>

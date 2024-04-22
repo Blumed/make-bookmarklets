@@ -122,11 +122,8 @@
             justify-content: center;
             padding-left: 72px;
         }
-        h2,
-        p {
-            max-width: 765px;
-        }
         h2 {
+            max-width: 765px;
             margin: 0;
         }
     }
@@ -138,9 +135,6 @@
         display: flex;
         flex-direction: column;
         align-self: center;
-    }
-    .bookmarklet-input {
-        margin-bottom: 20px;
     }
     .button-bookmarklet {
         margin-left: auto;

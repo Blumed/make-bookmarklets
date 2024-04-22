@@ -40,8 +40,7 @@
             padding-right: 115px;
         }
     }
-    .container,
-    .code-editor {
+    .container {
         position: relative;
         z-index: 1;
     }
@@ -76,15 +75,15 @@
             font-size: 1.3rem;
             margin-bottom: 10px;
         }
-        ul {
-            padding-left: 23px;
-            margin-top: 10px;
-            margin-bottom: 0;
-        }
-        li {
-            list-style: circle;
-            line-height: 24px;
-        }
+        // ul {
+        //     padding-left: 23px;
+        //     margin-top: 10px;
+        //     margin-bottom: 0;
+        // }
+        // li {
+        //     list-style: circle;
+        //     line-height: 24px;
+        // }
     }
     @media (max-width: 768px) {
         .ribbon {

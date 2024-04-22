@@ -268,7 +268,10 @@ a {
         margin-top: 20px;
         margin-left: 0;
     }
-
+    
+    .mobile-only {
+        display: inline-block;
+    }
     .desktop-only {
         display: none;
     }

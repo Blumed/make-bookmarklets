@@ -1,7 +1,3 @@
-<script lang="ts">
-    let toggleNavigation = false;
-</script>
-
 <a href="#skip-main-navigation" class="sr-only">Skip Main Navigation</a>
 <nav>
     <ul id="main-navigation" class="list-unstyled">

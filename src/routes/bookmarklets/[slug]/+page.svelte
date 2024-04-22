@@ -6,9 +6,8 @@
     export let codeEditor;
 
     let codeInput = codeEditor;
-    //if (codeInput === "") {codeInput = data.code}
-    $: codeInput = codeInput;
-    console.log('on page codeInput', codeInput);
+   // if (codeInput === "") {codeInput = data.code}
+    $: codeInput = codeInput === "" ? data.code : codeInput;
 </script>
 
 <Hero>
