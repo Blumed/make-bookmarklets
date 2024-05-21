@@ -5,10 +5,9 @@
     const increaseLove = () => (dimension = (Number(dimension) * 2).toString());
 </script>
 
-<span
+<button
     on:click={() => increaseLove()}
     tabindex="0"
-    role="button"
     aria-label="Click and my heart grows"
 >
     <svg
@@ -24,10 +23,10 @@
             fill="#ec6e89"
         /></svg
     >
-</span>
+</button>
 
 <style lang="scss">
-    span {
+    button {
         position: relative;
         width: 24px;
         display: inline-block;
@@ -36,6 +35,8 @@
         border: 0;
         box-shadow: none;
         padding: 0;
+        background-color: transparent;
+        
         &:hover {
             box-shadow: none !important;
         }

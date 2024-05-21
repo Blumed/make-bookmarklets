@@ -17,18 +17,13 @@ export default defineConfig(({command}: any) => {
 			},
 			plugins: [
 				sveltekit(),
-			],	test: {
-				include: ['src/**/*.{test,spec}.{js,ts}']
-			}
+			]
 		}
 	} else {
 		return {
 			plugins: [
 				sveltekit(),
-			],
-			test: {
-				include: ['src/**/*.{test,spec}.{js,ts}']
-			}
+			]
 		}
 	}
 }) as UserConfig;

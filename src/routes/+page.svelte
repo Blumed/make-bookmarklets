@@ -2,18 +2,18 @@
     import { browser } from "$app/environment";
     import Seo from "$lib/components/page-meta.svelte";
     import AccordionItem from "$lib/components/accordion.svelte";
-    import CodeEditor from "$lib/components/editors/js-editor.svelte";
+    import CodeEditor from "$lib/components/editor.svelte";
 
     import { slide } from "svelte/transition";
     import {
-        useExampleBookmarklet1,
-        useExampleBookmarklet2,
-        useExampleBookmarklet3,
-        useExampleBookmarklet4,
-        useExampleBookmarklet5,
-        useExampleSnippet1,
-        useExampleSnippet2,
-    } from "$lib/components/constants";
+        playMP3Recording,
+        fullWebpageScreenShot,
+        openCurrentPageGooglePageSpeedInsights,
+        copyToClipboard,
+        googleHighlightedText,
+        tippyTopUI,
+        dialogUI,
+    } from "$lib/components/code-snippets";
 
     import { minify } from "terser";
     import Accordion from "$lib/components/accordion.svelte";
@@ -34,61 +34,10 @@
     let toggleExamples = false;
     let toggleSnippets = false;
     let toggleGists = false;
+    let toggleOptions = false;
     let clickedMobileInstructions = false;
     let files: any;
 
-    async function minification(str: string) {
-        const result = await minify(str, {});
-        return result.code;
-    }
-
-    function result() {
-        if (codeInputGist !== "") {
-            return minification(codeInputGist)
-                .then((result) => {
-                    errorMessage = "";
-                    if (result === "") {
-                        errorMessage =
-                            "Sorry something went wrong creating your gist bookmarklet 😅";
-                    } else {
-                        codeOutput =
-                            "javascript:(function(){" + result + "}());";
-                    }
-
-                    return;
-                })
-                .catch((err) => {
-                    codeOutput = "";
-                    return (errorMessage = err);
-                });
-        }
-
-        return minification(codeInput)
-            .then((result) => {
-                errorMessage = "";
-                if (result === "") {
-                    errorMessage = "Put some code in there!";
-                } else {
-                    codeOutput = "javascript:(function(){" + result + "}());";
-                }
-                return;
-            })
-            .catch((err) => {
-                codeOutput = "";
-                return (errorMessage = err);
-            });
-    }
-
-    function reset() {
-        codeOutput = "";
-        codeInput = "";
-        errorMessage = "";
-        codeInputGist = "";
-        gistUrl = "";
-        selectedGist = "";
-        gistEditorMessage = "";
-        clickedMobileInstructions = false;
-    }
 
     function toggleSidebar(id: string) {
         if (browser) {
@@ -112,7 +61,7 @@
     function scrollToMobileInstructions() {
         if (browser) {
             const mobileInstruction = document.querySelector(
-                "#item-5-header"
+                "#item-5-header",
             ) as HTMLElement;
             mobileInstruction?.click();
             const mobileInstructionPosition =
@@ -131,7 +80,7 @@
     function addToCodeEditor(
         getCodeInput: string,
         openSidebar: boolean,
-        id: string
+        id: string,
     ) {
         if (id === "gists-menu") {
             codeInput = "";
@@ -203,7 +152,7 @@
             const gistData = await response.json();
 
             gistFiles = Object.values(gistData.files).filter(
-                (javascriptFile) => javascriptFile?.language === "JavaScript"
+                (javascriptFile) => javascriptFile?.language === "JavaScript",
             );
 
             if (gistFiles.length === 0) {
@@ -243,7 +192,7 @@
         addToCodeEditor(
             gistFiles && gistFiles[selectedGist].content,
             true,
-            "gists-menu"
+            "gists-menu",
         );
 
         codeInputGist = `async function getGist(url) {
@@ -268,83 +217,75 @@ getGist('https://gist.githubusercontent.com/${
         gistEditorMessage =
             "It is unnecessary to edit code below. It is only a snapshot of your gist for verification purposes. Your generated bookmarklet will contain the selected gist url";
     }
-    async function read(file) {
-        codeInput = await file.text();
-    }
-    async function save() {
-        if (browser) {
-            const suggestedName = `${new Date()
-                .toISOString()
-                .slice(0, 10)}-${new Date()
-                .toLocaleTimeString()
-                .replace(/( |:|\_)/g, "-")}.js`;
-            const options = {
-                suggestedName: suggestedName,
-                types: [
-                    {
-                        description: "Make Bookmarklet File",
-                        accept: {
-                            "text/javascript": [".js"],
-                        },
-                    },
-                ],
-            };
-            const supportsFileSystemAccess =
-                "showSaveFilePicker" in window &&
-                (() => {
-                    try {
-                        return window.self === window.top;
-                    } catch {
-                        return false;
-                    }
-                })();
-            if (supportsFileSystemAccess) {
-                try {
-                    const handle = await showSaveFilePicker(options);
-                    const writable = await handle.createWritable();
-                    await writable.write(codeInput);
-                    await writable.close();
-                    return;
-                } catch (err) {
-                    if (err.name !== "AbortError") {
-                        console.error(err.name, err.message);
-                        return;
-                    }
-                }
-            } else {
-                const blobURL = URL.createObjectURL(
-                    new Blob([codeInput], { type: "text/javascript" })
-                );
-                const a = document.createElement("a");
-                a.href = blobURL;
-                a.download = suggestedName;
-                a.style.display = "none";
-                document.body.append(a);
-                a.click();
-                setTimeout(() => {
-                    URL.revokeObjectURL(blobURL);
-                    a.remove();
-                }, 1000);
-            }
-        }
-    }
+    // async function read(file) {
+    //     codeInput = await file.text();
+    // }
 
-    $: if (codeInput === "") reset();
-    $: if (codeInput !== "" && errorMessage === "Put some code in there!")
-        errorMessage = "";
-    $: codeInput = codeInput;
-    $: if (gistUrl === "" && !gistValid) gistValid = true;
-    gistErrorMessage = null;
+    // async function save() {
+    //     if (browser) {
+    //         const suggestedName = `${new Date()
+    //             .toISOString()
+    //             .slice(0, 10)}-${new Date()
+    //             .toLocaleTimeString()
+    //             .replace(/( |:|\_)/g, "-")}.js`;
+    //         const options = {
+    //             suggestedName: suggestedName,
+    //             types: [
+    //                 {
+    //                     description: "Make Bookmarklet File",
+    //                     accept: {
+    //                         "text/javascript": [".js"],
+    //                     },
+    //                 },
+    //             ],
+    //         };
+    //         const supportsFileSystemAccess =
+    //             "showSaveFilePicker" in window &&
+    //             (() => {
+    //                 try {
+    //                     return window.self === window.top;
+    //                 } catch {
+    //                     return false;
+    //                 }
+    //             })();
+    //         if (supportsFileSystemAccess) {
+    //             try {
+    //                 const handle = await showSaveFilePicker(options);
+    //                 const writable = await handle.createWritable();
+    //                 await writable.write(codeInput);
+    //                 await writable.close();
+    //                 return;
+    //             } catch (err) {
+    //                 if (err.name !== "AbortError") {
+    //                     console.error(err.name, err.message);
+    //                     return;
+    //                 }
+    //             }
+    //         } else {
+    //             const blobURL = URL.createObjectURL(
+    //                 new Blob([codeInput], { type: "text/javascript" }),
+    //             );
+    //             const a = document.createElement("a");
+    //             a.href = blobURL;
+    //             a.download = suggestedName;
+    //             a.style.display = "none";
+    //             document.body.append(a);
+    //             a.click();
+    //             setTimeout(() => {
+    //                 URL.revokeObjectURL(blobURL);
+    //                 a.remove();
+    //             }, 1000);
+    //         }
+    //     }
+    // }
 
-    $: if (gistUrl === "") gistMultipleFiles = false;
-    $: selectedGist, selectedGist !== "" && createGistBookmarklet();
 
-    $: if (files) {
-        for (const file of files) {
-            read(file);
-            console.log(`${file.name}: ${file.size} bytes`);
-        }
-    }
+    // $: if (files) {
+    //     for (const file of files) {
+    //         read(file);
+    //         console.log(`${file.name}: ${file.size} bytes`);
+    //     }
+    // }
 </script>
 
 <Seo title="Make Bookmarklets | Make it easy" pageCanonicalUrl="/" />
@@ -387,136 +328,73 @@ getGist('https://gist.githubusercontent.com/${
         {/if}
         <div class="editor-wrapper">
             <CodeEditor bind:codeEditor={codeInput} />
+            <!-- <div class="editor-options">
+                <input hidden type="file" id="upload" accept=".js" bind:files />
+                <label
+                    class="button-option button-custom"
+                    for="upload"
+                    role="button"
+                    title="Upload Javascript"
+                    ><img src="/file.svg" alt="file upload icon" /> Upload File</label
+                >
+                <button
+                    type="button"
+                    class="button-option"
+                    title="Download Javascript"
+                    on:click={save}
+                    ><img src="/file.svg" alt="file download icon" />Download
+                    File</button
+                >
+            </div> -->
+            <!-- <button
+                type="button"
+                class="button-options"
+                on:click={() => (toggleOptions = !toggleOptions)}
+                >More Options</button
+            > -->
         </div>
-
-        {#if errorMessage !== ""}
+        <!-- {#if toggleOptions}
+            <div class="editor-drawer drawer-options" in:slide out:slide>
+                <div class="external-files">
+                    <p>Save or Restore your work</p>
+                    <input
+                        hidden
+                        type="file"
+                        id="upload"
+                        accept=".js"
+                        bind:files
+                    />
+                    <label
+                        class="button button-upload fill-white"
+                        for="upload"
+                        role="button"
+                        title="Upload Javascript"
+                        ><img src="/file.svg" alt="file upload icon" /> Up</label
+                    >
+                    <button
+                        type="button"
+                        class="button button-download fill-white"
+                        title="Download Javascript"
+                        on:click={save}
+                        ><img
+                            src="/file.svg"
+                            alt="file download icon"
+                        />Down</button
+                    >
+                </div>
+            </div>
+        {/if} -->
+        <!-- {#if errorMessage !== ""}
             <div
-                class={`error-message ${codeInputGist && "gist-message"}`}
+                class={`editor-drawer error-message ${
+                    codeInputGist && "gist-message"
+                }`}
                 in:slide
                 out:slide
             >
                 <span>{errorMessage}</span>
             </div>
-        {/if}
-
-        <div class="code-input-controls">
-            <div class="buttons">
-                <button
-                    type="button"
-                    class="button button-create fill-white"
-                    on:click={result}
-                    >{codeOutput === "" ? "Create" : "Update"} Bookmarklet</button
-                >
-                <button
-                    type="button"
-                    class="button button-reset fill-white"
-                    on:click={reset}>Reset</button
-                >
-                <input hidden type="file" id="upload" accept=".js" bind:files />
-                <label class="button button-upload fill-white" for="upload"
-                    ><img src="/file.svg" alt="file upload icon" /> Up</label
-                >
-                <button
-                    type="button"
-                    class="button button-download fill-white"
-                    on:click={save}
-                    ><img
-                        src="/file.svg"
-                        alt="file download icon"
-                    />Down</button
-                >
-                {#if codeOutput !== ""}
-                    <a
-                        href={codeOutput}
-                        class="button button-run-code fill-blue mobile-only"
-                        >Run Code</a
-                    >
-                {/if}
-            </div>
-        </div>
-
-        {#if codeOutput !== ""}
-            <div class="code-output-controls" in:slide out:slide>
-                <a
-                    role="button"
-                    href={codeOutput}
-                    class="button button-run-code fill-blue desktop-only"
-                    >Run Code</a
-                >
-                <button
-                    type="button"
-                    class="button button-toggle-code fill-white desktop-only"
-                    on:click={() => (toggleBookmarklet = !toggleBookmarklet)}
-                    >{`${toggleBookmarklet ? "Hide" : "Show"} Code`}
-                </button>
-                <div class="group-bookmarklet-output">
-                    <a
-                        role="button"
-                        href={codeOutput}
-                        on:click={(e) => e.preventDefault()}
-                        class="button button-bookmarklet">{bookmarkletName}</a
-                    >
-                    <div class="inline-field-group desktop-only">
-                        <label for="name">Name your Bookmarklet</label>
-                        <input
-                            type="text"
-                            id="name"
-                            class="input"
-                            bind:value={bookmarkletName}
-                        />
-                    </div>
-                </div>
-
-                {#if toggleBookmarklet && codeOutput !== ""}
-                    <div
-                        class="inline-field-group output-code-fields desktop-only"
-                        in:slide
-                        out:slide
-                    >
-                        <input
-                            type="text"
-                            class="input"
-                            name="output"
-                            id="output"
-                            value={codeOutput}
-                        />
-                        <button
-                            type="button"
-                            class="button-copy"
-                            in:slide
-                            on:click={() =>
-                                navigator.clipboard.writeText(codeOutput)}
-                            >Copy</button
-                        >
-                    </div>
-                {/if}
-
-                <div class="inline-field-group output-code-fields mobile-only">
-                    <label for="output">Bookmarklet Url</label>
-                    <input
-                        type="text"
-                        class="input"
-                        name="output"
-                        id="output"
-                        value={codeOutput}
-                    />
-                    <button
-                        type="button"
-                        class="button-copy"
-                        in:slide
-                        on:click={() =>
-                            navigator.clipboard.writeText(codeOutput)}
-                        >Copy</button
-                    >
-                </div>
-                <button
-                    type="button"
-                    class="button fill-white button-mobile-instructions mobile-only"
-                    on:click={() => scrollToMobileInstructions()}
-                    >Save bookmarklets on mobile?</button
-                >
-            </div>
-        {/if}
+        {/if} -->
     </div>
 </div>
 
@@ -548,7 +426,6 @@ getGist('https://gist.githubusercontent.com/${
                 </p>
                 <label
                     for="examples-menu"
-                    role="button"
                     class="button fill-white"
                     tabindex="0"
                     >{`${toggleExamples ? "Hide" : "Show"} Examples`}</label
@@ -578,7 +455,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleBookmarklet1}
+            value={playMP3Recording}
             rows="8"
             readonly
         />
@@ -586,7 +463,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleBookmarklet1, true, "examples-menu")}
+                addToCodeEditor(playMP3Recording, true, "examples-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -601,7 +478,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleBookmarklet2}
+            value={fullWebpageScreenShot}
             rows="8"
             readonly
         />
@@ -609,7 +486,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleBookmarklet2, true, "examples-menu")}
+                addToCodeEditor(fullWebpageScreenShot, true, "examples-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -624,7 +501,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleBookmarklet3}
+            value={openCurrentPageGooglePageSpeedInsights}
             rows="8"
             readonly
         />
@@ -632,7 +509,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleBookmarklet3, true, "examples-menu")}
+                addToCodeEditor(openCurrentPageGooglePageSpeedInsights, true, "examples-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -646,7 +523,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleBookmarklet4}
+            value={copyToClipboard}
             rows="8"
             readonly
         />
@@ -654,7 +531,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleBookmarklet4, true, "examples-menu")}
+                addToCodeEditor(copyToClipboard, true, "examples-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -670,7 +547,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleBookmarklet5}
+            value={googleHighlightedText}
             rows="8"
             readonly
         />
@@ -678,7 +555,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleBookmarklet5, true, "examples-menu")}
+                addToCodeEditor(googleHighlightedText, true, "examples-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -712,8 +589,7 @@ getGist('https://gist.githubusercontent.com/${
                     role="button"
                     class="button fill-white"
                     tabindex="0"
-                    >{`${toggleSnippets ? "Hide" : "Show"} Snippets`}</label
-                >
+                    >{`${toggleSnippets ? "Hide" : "Show"} Snippets`}</label>
             </div>
         </div>
     </div>
@@ -739,7 +615,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleSnippet1}
+            value={tippyTopUI}
             rows="8"
             readonly
         />
@@ -747,7 +623,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleSnippet1, true, "snippets-menu")}
+                addToCodeEditor(tippyTopUI, true, "snippets-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -762,7 +638,7 @@ getGist('https://gist.githubusercontent.com/${
             name="webpage-editable"
             id="webpage-editable"
             class="example-code"
-            value={useExampleSnippet2}
+            value={dialogUI}
             rows="8"
             readonly
         />
@@ -770,7 +646,7 @@ getGist('https://gist.githubusercontent.com/${
             type="button"
             class="button button-small fill-white"
             on:click={() =>
-                addToCodeEditor(useExampleSnippet2, true, "snippets-menu")}
+                addToCodeEditor(dialogUI, true, "snippets-menu")}
             >Add To Editor</button
         >
     </aside>
@@ -891,9 +767,9 @@ getGist('https://gist.githubusercontent.com/${
                     class="button-inline"
                     on:click={() =>
                         addToCodeEditor(
-                            useExampleBookmarklet4,
+                            copyToClipboard,
                             false,
-                            "examples-menu"
+                            "examples-menu",
                         )}>Example</button
                 >.
             </p>
@@ -1068,9 +944,11 @@ getGist('https://gist.githubusercontent.com/${
         margin-bottom: 40px;
         padding-right: 431px;
         span {
-            text-shadow: -1px -1px 0 var(--black-color),
-                1px -1px 0 var(--black-color), -1px 1px 0 var(--black-color),
-                1px 1px 0 var(--black-color);
+            text-shadow:
+                -1px -1px 0 var(--color-black),
+                1px -1px 0 var(--color-black),
+                -1px 1px 0 var(--color-black),
+                1px 1px 0 var(--color-black);
             color: white;
             font-size: 5.3rem;
         }
@@ -1093,149 +971,13 @@ getGist('https://gist.githubusercontent.com/${
             line-height: 24px;
         }
     }
-    .code-input-controls {
-        margin-top: 50px;
-        margin-bottom: 30px;
-        .buttons {
-            display: flex;
-        }
-        .button {
-            height: 50px;
-        }
-    }
-    .gist-message {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        padding: 1rem;
-        border-bottom: 2px solid white;
-        color: var(--clay-color);
-        background-color: #282c34;
-        box-shadow: 12px 12px 0 0 #ffffff;
-    }
-    .gist-message + .editor-wrapper:before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-color: rgb(255, 255, 255, 0.1);
-        z-index: 1;
-        pointer-events: none;
-    }
-    .editor-wrapper {
-        min-height: 200px;
-        position: relative;
-        z-index: 1;
-    }
-    :global(.codemirror-wrapper) {
-        box-shadow: 12px 12px 0 0 #fff;
-    }
-    :global(.cm-scroller) {
-        min-height: 200px;
-    }
-    .error-message {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        padding: 1rem;
-        color: var(--dark-red-color);
-        background-color: pink;
-        box-shadow: 12px 12px 0 0 #ffffff;
-        position: relative;
-        z-index: 2;
-    }
-    .code-output-controls {
-        display: flex;
-        flex-wrap: wrap;
-        position: relative;
-    }
-    .inline-field-group {
-        display: flex;
-        align-items: center;
-        margin-left: auto;
-        order: 2;
-        #name {
-            min-width: 167px;
-        }
-    }
+
 
     :global(.button.button-toggle-code) {
         margin-left: 0;
         margin-right: 20px;
     }
-    .output-code-fields {
-        width: calc(100% - 415px);
-        margin: 0;
-        position: absolute;
-        left: 0;
-        max-width: 415px;
-        bottom: 0;
-    }
-    #output {
-        width: 100%;
-        padding: 10px;
-        border: 2px solid var(--black-color);
-        border-radius: 0.25rem;
-        display: flex;
-        margin-top: 20px;
-        align-self: center;
-        order: 3;
-        padding-right: 65px;
-    }
-    .button-reset {
-        &:hover {
-            background-color: var(--pink-color);
-        }
-    }
-    .button-upload {
-        margin-left: auto;
-    }
-    .button-upload,
-    .button-download {
-        display: flex;
-        align-items: center;
-    }
-    .button-download img {
-        transform: rotate(180deg);
-    }
-    .button.button-bookmarklet {
-        margin-bottom: 30px;
-        background-color: #f78da7;
-        line-height: 20px;
-    }
-    .button-toggle-code {
-        height: 50px;
-    }
-    .button-run-code {
-        height: 50px;
-        line-height: 17px;
-        &.desktop-only {
-            margin-right: 20px;
-        }
-    }
-    .button-copy {
-        position: absolute;
-        cursor: pointer;
-        right: 0;
-        color: var(--black-color);
-        height: 38.5px;
-        top: 20px;
-        padding-inline: 10px;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border: 2px solid var(--black-color);
-        border-top-right-radius: 0.25rem;
-        border-bottom-right-radius: 0.25rem;
-        background-color: var(--clay-color);
-        transition: var(--global-transition);
-        &:hover {
-            background-color: var(--turquoise-color);
-        }
-    }
-    .group-bookmarklet-output {
-        display: flex;
-        flex-direction: column;
-        margin-left: auto;
-    }
+
     .faq-section {
         h2 {
             text-align: center;
@@ -1309,12 +1051,12 @@ getGist('https://gist.githubusercontent.com/${
         overflow-y: auto;
         font-size: 0.875rem;
         z-index: 6;
-        color: var(--black-color);
-        background-color: var(--clay-color);
+        color: var(--color-black);
+        background-color: var(--color-clay);
         transition: var(--global-transition);
         backface-visibility: hidden;
         padding: 16px 16px 60px;
-        border-left: 2px solid var(--black-color);
+        border-left: 2px solid var(--color-black);
         h2 {
             font-size: 1.3rem;
             margin-top: 35px;
@@ -1373,9 +1115,6 @@ getGist('https://gist.githubusercontent.com/${
         width: 100%;
         margin-top: 30px;
     }
-    .mobile-only {
-        display: none;
-    }
     .mobile-bookmark-instructions {
         li {
             margin-bottom: 15px;
@@ -1397,11 +1136,11 @@ getGist('https://gist.githubusercontent.com/${
             height: auto;
             text-align: left;
             padding-bottom: 0;
-            background-color: var(--pink-color);
+            background-color: var(--color-pink);
             overflow: inherit;
             header::after {
                 content: "";
-                background-color: var(--pink-color);
+                background-color: var(--color-pink);
                 z-index: -1;
                 height: 100px;
                 width: 100%;
@@ -1427,75 +1166,8 @@ getGist('https://gist.githubusercontent.com/${
                 font-size: 2.7rem;
             }
         }
-        .code-input-controls {
-            margin-block: 20px;
-            .buttons {
-                display: flex;
-                flex-wrap: wrap;
-            }
-        }
-        .button-create {
-            margin-top: 20px;
-        }
-        .button-reset {
-            margin-right: 20px;
-        }
-        .button-upload {
-            width: fit-content;
-            margin-left: 0;
-            display: inline-flex;
-            margin-top: 20px;
-            margin-right: 20px;
-        }
-        .button-download {
-            margin-right: 20px;
-        }
-        :global(.button-create) {
-            margin-right: 20px;
-        }
-
-        .inline-field-group {
-            position: relative;
-            flex-direction: column;
-            width: 100%;
-            margin-right: 0;
-            margin-bottom: 20px;
-            align-items: flex-start;
-            order: 1;
-            label {
-                display: block;
-                margin-bottom: 3px;
-            }
-            .input {
-                margin-top: 0 !important;
-            }
-            #name {
-                min-width: inherit;
-                width: -moz-available;
-                width: -webkit-fill-available;
-                width: fill-available;
-            }
-        }
-        .button-copy {
-            top: 23px;
-        }
-        .button-mobile-instructions {
-            order: 2;
-            line-height: 22px;
-        }
-        .button-bookmarklet {
-            display: none;
-            margin-right: 0;
-        }
-        :global(.button.button-toggle-code) {
-            order: 2;
-            margin-top: 0;
-        }
-        #output {
-            width: 100%;
-        }
         .mobile-bookmark-instructions {
-            background-color: var(--clay-color);
+            background-color: var(--color-clay);
             padding: 10px 30px 10px;
             border-radius: 0.25rem;
         }
@@ -1512,13 +1184,6 @@ getGist('https://gist.githubusercontent.com/${
         .gists-image {
             width: 100%;
             height: 100%;
-        }
-
-        .mobile-only {
-            display: inline-block;
-        }
-        .desktop-only {
-            display: none;
         }
     }
 </style>

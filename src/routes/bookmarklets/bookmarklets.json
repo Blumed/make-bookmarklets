@@ -1,0 +1,33 @@
+[
+    {
+        "id": 0,
+        "url": "/bookmarklets/esseeoh",
+        "title": "Esseeoh",
+        "copy": "Full feature SEO bookmarklet for analyzing webpages",
+        "featured": true,
+        "categories": [
+            "seo"
+        ]
+    },
+    {
+        "id": 1,
+        "url": "/bookmarklets/responsive-breakpoint-builder",
+        "title": "Responsive Breakpoint Bookmarklet Builder",
+        "copy": "Build and customize a responsive breakpoint bookmarklet",
+        "featured": true,
+        "categories": [
+            "responsive",
+            "css"
+        ]
+    },
+    {
+        "id": 2,
+        "url": "/bookmarklets/color-picker",
+        "title": "Color Picker",
+        "copy": "Build and customize a responsive breakpoint bookmarklet",
+        "featured": false,
+        "categories": [
+            "hex color"
+        ]
+    }
+]
