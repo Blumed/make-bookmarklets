@@ -20,7 +20,7 @@
 		"@codemirror/theme-one-dark": "^6.1.0",
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-static": "^2.0.1",
-		"@sveltejs/kit": "^1.5.0",
+		"@sveltejs/kit": "^2.0.0",
 		"@types/uglify-js": "^3.17.1",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
